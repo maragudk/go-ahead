@@ -1,2 +1,4 @@
 /ahead
+/certs/
+/cockroach-data/
 /cover.out
