@@ -1,0 +1,18 @@
+[Unit]
+Description=ahead
+Requires=network.target
+
+[Service]
+Type=notify
+User=app
+ExecStart=/var/lib/ahead/ahead start -config /etc/ahead.toml
+WorkingDirectory=/var/lib/ahead
+
+Restart=always
+
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=ahead
+
+[Install]
+WantedBy=default.target
