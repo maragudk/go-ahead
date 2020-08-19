@@ -40,6 +40,8 @@ func (s *Server) Start() error {
 	hostname := getLocalhostOrEmpty()
 	errs := make(chan error)
 
+	s.setupRoutes()
+
 	go func() {
 		if err := s.listenAndServeInternal(hostname); err != nil {
 			errs <- err
@@ -58,6 +60,10 @@ func (s *Server) Start() error {
 
 	err := <-errs
 	return errors2.Wrap(err, "could not listen and serve")
+}
+
+func (s *Server) setupRoutes() {
+	s.setupHealthHandler()
 }
 
 // listenAndServeExternal on the external port. Note that all routes should be defined on externalMux before calling this.
