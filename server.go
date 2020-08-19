@@ -17,6 +17,7 @@ import (
 type Server struct {
 	ExternalPort int
 	InternalPort int
+	Version      string
 	externalMux  *http.ServeMux
 	internalMux  *http.ServeMux
 }
@@ -24,6 +25,7 @@ type Server struct {
 type NewServerOptions struct {
 	ExternalPort int
 	InternalPort int
+	Version      string
 }
 
 func NewServer(options NewServerOptions) *Server {
@@ -32,6 +34,7 @@ func NewServer(options NewServerOptions) *Server {
 		InternalPort: options.InternalPort,
 		externalMux:  http.NewServeMux(),
 		internalMux:  http.NewServeMux(),
+		Version:      options.Version,
 	}
 }
 
@@ -64,6 +67,7 @@ func (s *Server) Start() error {
 
 func (s *Server) setupRoutes() {
 	s.setupHealthHandler()
+	s.setupVersionHandler()
 	s.setupMetricsHandler()
 }
 

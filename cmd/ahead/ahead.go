@@ -7,6 +7,8 @@ import (
 	"go-ahead"
 )
 
+const Version = "VERSION"
+
 func main() {
 	// Disable timestamps in logger
 	log.SetFlags(0)
@@ -21,6 +23,7 @@ func main() {
 	s := ahead.NewServer(ahead.NewServerOptions{
 		ExternalPort: c.ExternalPort,
 		InternalPort: c.InternalPort,
+		Version:      Version,
 	})
 
 	if err := s.Start(); err != nil {

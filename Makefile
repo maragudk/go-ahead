@@ -1,12 +1,16 @@
 .PHONY: bindata build clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-up start test test-integration up
 
+export VERSION := `git rev-parse --short HEAD`
 export MIGRATE_DB_URL := "cockroachdb://root@localhost:26257/ahead?sslmode=verify-full&sslcert=certs/client.root.crt&sslkey=certs/client.root.key&sslrootcert=certs/ca.crt"
 
 bindata:
 	go-bindata -nometadata -pkg storage -o storage/migrations.go -ignore '.*\.go' -ignore '.DS_Store' -prefix storage/migrations storage/migrations
 
 build:
-	go build -o ahead cmd/ahead/*.go
+	sed -i.bak "s/VERSION/${VERSION}/g" cmd/ahead/ahead.go
+	GOOS=linux GOARCH=amd64 go build -o ahead cmd/ahead/*.go
+	sed -i.bak "s/${VERSION}/VERSION/g" cmd/ahead/ahead.go
+	rm cmd/ahead/ahead.go.bak
 
 clean:
 	rm -rf certs
@@ -41,8 +45,8 @@ migrate-goto:
 migrate-up:
 	migrate -path storage/migrations -database ${MIGRATE_DB_URL} up
 
-start: build
-	./ahead start
+start:
+	go run cmd/ahead/*.go start
 
 test:
 	go test -coverprofile=cover.out -mod=readonly ./...
