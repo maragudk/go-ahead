@@ -5,7 +5,7 @@ Requires=network.target
 [Service]
 Type=notify
 User=app
-ExecStart=/var/lib/ahead/ahead start -config /etc/ahead.toml
+ExecStart=/var/lib/ahead/ahead -config /etc/ahead.toml start
 WorkingDirectory=/var/lib/ahead
 
 Restart=always
