@@ -64,6 +64,7 @@ func (s *Server) Start() error {
 
 func (s *Server) setupRoutes() {
 	s.setupHealthHandler()
+	s.setupMetricsHandler()
 }
 
 // listenAndServeExternal on the external port. Note that all routes should be defined on externalMux before calling this.
