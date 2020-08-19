@@ -1,8 +1,7 @@
 package ahead
 
 import (
-	"io/ioutil"
-	"net/http/httptest"
+	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -13,15 +12,9 @@ func TestHealthHandler(t *testing.T) {
 	s.setupHealthHandler()
 
 	t.Run("returns OK on no errors", func(t *testing.T) {
-		request := httptest.NewRequest("GET", "/health", nil)
-		recorder := httptest.NewRecorder()
+		code, body := makeGETRequest(s.healthHandler(), "/health")
 
-		s.internalMux.ServeHTTP(recorder, request)
-		result := recorder.Result()
-
-		body, err := ioutil.ReadAll(result.Body)
-		require.NoError(t, err)
-
-		require.Equal(t, "OK", string(body))
+		require.Equal(t, http.StatusOK, code)
+		require.Equal(t, "OK", body)
 	})
 }
