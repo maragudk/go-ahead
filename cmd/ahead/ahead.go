@@ -25,6 +25,7 @@ func main() {
 		Storer:       createStorer(c),
 		ExternalPort: c.ExternalPort,
 		InternalPort: c.InternalPort,
+		Name:         c.Name,
 		Version:      Version,
 	})
 
