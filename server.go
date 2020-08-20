@@ -11,10 +11,12 @@ import (
 	"github.com/coreos/go-systemd/daemon"
 
 	"go-ahead/errors2"
+	"go-ahead/storage"
 )
 
 // Server takes requests and responds. 😎
 type Server struct {
+	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
 	Version      string
@@ -23,6 +25,7 @@ type Server struct {
 }
 
 type NewServerOptions struct {
+	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
 	Version      string
@@ -30,6 +33,7 @@ type NewServerOptions struct {
 
 func NewServer(options NewServerOptions) *Server {
 	return &Server{
+		Storer:       options.Storer,
 		ExternalPort: options.ExternalPort,
 		InternalPort: options.InternalPort,
 		externalMux:  http.NewServeMux(),
@@ -42,6 +46,10 @@ func NewServer(options NewServerOptions) *Server {
 func (s *Server) Start() error {
 	hostname := getLocalhostOrEmpty()
 	errs := make(chan error)
+
+	if err := s.Storer.Connect(); err != nil {
+		return err
+	}
 
 	s.setupRoutes()
 

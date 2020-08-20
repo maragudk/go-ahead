@@ -9,6 +9,15 @@ import (
 type Config struct {
 	ExternalPort int
 	InternalPort int
+	Database     struct {
+		Host     string
+		Port     int
+		User     string
+		Database string
+		Cert     string
+		Key      string
+		RootCert string
+	}
 }
 
 // ReadConfig from path.
