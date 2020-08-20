@@ -18,6 +18,7 @@ const (
 // Storer is the storage abstraction.
 type Storer struct {
 	DB       *sqlx.DB
+	appName  string
 	user     string
 	host     string
 	port     int
@@ -28,6 +29,7 @@ type Storer struct {
 }
 
 type NewStorerOptions struct {
+	AppName  string
 	User     string
 	Host     string
 	Port     int
@@ -39,6 +41,7 @@ type NewStorerOptions struct {
 
 func NewStorer(options NewStorerOptions) *Storer {
 	return &Storer{
+		appName:  options.AppName,
 		user:     options.User,
 		host:     options.Host,
 		port:     options.Port,
@@ -64,7 +67,7 @@ func (s *Storer) Connect() error {
 		return errors2.Wrap(err, "could not connect to db")
 	}
 
-	if _, err := s.DB.ExecContext(ctx, "set APPLICATION_NAME = 'ahead'"); err != nil {
+	if _, err := s.DB.ExecContext(ctx, "set APPLICATION_NAME = $1", s.appName); err != nil {
 		return errors2.Wrap(err, "could not set application name")
 	}
 

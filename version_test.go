@@ -9,10 +9,10 @@ import (
 
 func TestServer_versionHandler(t *testing.T) {
 	t.Run("prints the version number", func(t *testing.T) {
-		s := NewServer(NewServerOptions{Version: "123abc"})
+		s := NewServer(NewServerOptions{Name: "appy", Version: "123abc"})
 		code, body := makeGETRequest(s.versionHandler(), "/version")
 
 		require.Equal(t, http.StatusOK, code)
-		require.Equal(t, "123abc", body)
+		require.Equal(t, "appy 123abc", body)
 	})
 }

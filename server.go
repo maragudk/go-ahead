@@ -19,6 +19,7 @@ type Server struct {
 	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
+	Name         string
 	Version      string
 	externalMux  *http.ServeMux
 	internalMux  *http.ServeMux
@@ -28,6 +29,7 @@ type NewServerOptions struct {
 	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
+	Name         string
 	Version      string
 }
 
@@ -36,9 +38,10 @@ func NewServer(options NewServerOptions) *Server {
 		Storer:       options.Storer,
 		ExternalPort: options.ExternalPort,
 		InternalPort: options.InternalPort,
+		Name:         options.Name,
+		Version:      options.Version,
 		externalMux:  http.NewServeMux(),
 		internalMux:  http.NewServeMux(),
-		Version:      options.Version,
 	}
 }
 
