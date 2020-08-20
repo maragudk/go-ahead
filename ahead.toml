@@ -1,2 +1,11 @@
 ExternalPort = 2020
 InternalPort = 2021
+
+[Database]
+Host = "localhost"
+Port = 26257
+User = "ahead"
+Database = "ahead"
+Cert = "certs/client.ahead.crt"
+Key = "certs/client.ahead.key"
+RootCert = "certs/ca.crt"

@@ -45,7 +45,7 @@ migrate-goto:
 migrate-up:
 	migrate -path storage/migrations -database ${MIGRATE_DB_URL} up
 
-start:
+start: up
 	go run cmd/ahead/*.go start
 
 test:
@@ -58,3 +58,5 @@ up:
 	mkdir -p cockroach-data
 	docker-compose -p ahead up -d
 	cockroach sql --certs-dir certs -e 'create database if not exists ahead;'
+	cockroach sql --certs-dir certs -e 'create user if not exists ahead;'
+	cockroach sql --certs-dir certs -e 'grant select, insert, update, delete on database ahead to ahead;'

@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"go-ahead"
+	"go-ahead/storage"
 )
 
 const Version = "VERSION"
@@ -21,6 +22,7 @@ func main() {
 	}
 
 	s := ahead.NewServer(ahead.NewServerOptions{
+		Storer:       createStorer(c),
 		ExternalPort: c.ExternalPort,
 		InternalPort: c.InternalPort,
 		Version:      Version,
@@ -29,4 +31,16 @@ func main() {
 	if err := s.Start(); err != nil {
 		log.Fatalln("Could not start:", err)
 	}
+}
+
+func createStorer(c Config) *storage.Storer {
+	return storage.NewStorer(storage.NewStorerOptions{
+		User:     c.Database.User,
+		Host:     c.Database.Host,
+		Port:     c.Database.Port,
+		Database: c.Database.Database,
+		Cert:     c.Database.Cert,
+		Key:      c.Database.Key,
+		RootCert: c.Database.RootCert,
+	})
 }

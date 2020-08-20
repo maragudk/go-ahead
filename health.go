@@ -21,6 +21,13 @@ func (s *Server) healthHandler() http.HandlerFunc {
 			l.Println("Testing error log in health endpoint")
 		}
 
+		if s.Storer != nil {
+			if _, err := s.Storer.DB.ExecContext(r.Context(), "select 1"); err != nil {
+				http.Error(w, "could not ping db", http.StatusBadGateway)
+				return
+			}
+		}
+
 		_, _ = io.WriteString(w, "OK")
 	}
 }
