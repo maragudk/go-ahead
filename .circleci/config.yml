@@ -1,0 +1,52 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:latest
+      - image: cockroachdb/cockroach:v20.1.4
+        command: [start, --insecure, --listen-addr, ":26258"]
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "go.sum" }}
+      - run:
+          name: Get go-junit-report
+          command: go get github.com/jstemmer/go-junit-report
+      - run:
+          name: Get dependencies
+          command: go get -v -t -d ./...
+      - save_cache:
+          key: dependencies-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Waiting for CockroachDB to be ready
+          command: |
+            for i in `seq 1 10`;
+            do
+              nc -z localhost 26258 && echo Success && exit 0
+              echo -n .
+              sleep 1
+            done
+            echo Failed waiting for CockroachDB && exit 1
+      - run:
+          name: Run tests
+          command: |
+            mkdir -p $TEST_RESULTS
+            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
+            go test -v -p 1 -coverprofile=${TEST_RESULTS}/cover.out -tags=integration -mod=readonly ./... | tee ${TEST_RESULTS}/go-test.out
+      - run:
+          name: Run coverage
+          command: |
+            go tool cover -html=$TEST_RESULTS/cover.out -o $TEST_RESULTS/cover.html
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/cover.html
+          destination: cover.html
