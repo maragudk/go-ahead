@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+  db:
+    command: start-single-node --insecure --listen-addr=0.0.0.0:26257
+    image: cockroachdb/cockroach:v20.1.4
+    ports:
+      - 26258:26257

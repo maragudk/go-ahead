@@ -1,4 +1,4 @@
-.PHONY: bindata build clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-up start test test-integration up
+.PHONY: bindata build clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-up start test test-down test-integration test-up up
 
 export VERSION := `git rev-parse --short HEAD`
 export MIGRATE_DB_URL := "cockroachdb://root@localhost:26257/ahead?sslmode=verify-full&sslcert=certs/client.root.crt&sslkey=certs/client.root.key&sslrootcert=certs/ca.crt"
@@ -51,8 +51,14 @@ start: up
 test:
 	go test -coverprofile=cover.out -mod=readonly ./...
 
-test-integration:
+test-down:
+	docker-compose -p ahead-test -f docker-compose-test.yaml down
+
+test-integration: test-up
 	go test -p 1 -coverprofile=cover.out -tags=integration -mod=readonly ./...
+
+test-up:
+	docker-compose -p ahead-test -f docker-compose-test.yaml up -d
 
 up:
 	mkdir -p cockroach-data
