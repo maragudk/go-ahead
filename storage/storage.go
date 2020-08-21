@@ -92,3 +92,8 @@ func (s *Storer) createDataSourceName(cockroachSchema bool) string {
 
 	return dataSourceName
 }
+
+// Ping without a timeout.
+func (s *Storer) Ping() error {
+	return s.DB.Ping()
+}
