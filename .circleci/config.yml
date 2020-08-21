@@ -1,0 +1,46 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  integration-test:
+    docker:
+      - image: circleci/golang:1.15
+      - image: cockroachdb/cockroach:v20.1.4
+        command: [start-single-node, --insecure, --listen-addr, ":26258"]
+    environment:
+      TEST_RESULTS: /tmp/test-results
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "go.sum" }}
+      - run:
+          name: Get dependencies
+          command: go get -v -t -d ./...
+      - save_cache:
+          key: dependencies-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: Waiting for CockroachDB to be ready
+          command: dockerize -wait tcp://localhost:26258 -timeout 1m
+      - run:
+          name: Run tests
+          command: |
+            mkdir -p $TEST_RESULTS
+            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- -p 1 -coverprofile=${TEST_RESULTS}/cover.out -tags=integration -mod=readonly ./...
+      - run:
+          name: Run coverage
+          command: |
+            go tool cover -html=$TEST_RESULTS/cover.out -o $TEST_RESULTS/cover.html
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results/cover.html
+          destination: cover.html
+workflows:
+  version: 2
+  integration-test-workflow:
+    jobs:
+      - integration-test
