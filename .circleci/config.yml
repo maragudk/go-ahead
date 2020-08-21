@@ -12,12 +12,12 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dependencies-{{ checksum "go.sum" }}
       - run:
           name: Get go-junit-report
           command: go get github.com/jstemmer/go-junit-report
+      - restore_cache:
+          keys:
+            - dependencies-{{ checksum "go.sum" }}
       - run:
           name: Get dependencies
           command: go get -v -t -d ./...
