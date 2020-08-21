@@ -12,12 +12,12 @@ jobs:
       TEST_RESULTS: /tmp/test-results
     steps:
       - checkout
-      - run:
-          name: Get go-junit-report
-          command: go get github.com/jstemmer/go-junit-report
       - restore_cache:
           keys:
             - dependencies-{{ checksum "go.sum" }}
+      - run:
+          name: Get go-junit-report
+          command: go get github.com/jstemmer/go-junit-report
       - run:
           name: Get dependencies
           command: go get -v -t -d ./...
@@ -32,8 +32,7 @@ jobs:
           name: Run tests
           command: |
             mkdir -p $TEST_RESULTS
-            trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-            go test -v -p 1 -coverprofile=${TEST_RESULTS}/cover.out -tags=integration -mod=readonly ./... | tee ${TEST_RESULTS}/go-test.out
+            gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- -p 1 -coverprofile=${TEST_RESULTS}/cover.out -tags=integration -mod=readonly ./...
       - run:
           name: Run coverage
           command: |
