@@ -1,6 +1,6 @@
 # go-ahead
 
-A starter template for web apps. I use this for quickly getting a new web app set up.
+A starter template for SaaS web apps. I use this for quickly getting a new web app set up.
 
 ## Features
 
@@ -18,4 +18,6 @@ A starter template for web apps. I use this for quickly getting a new web app se
 
 ## About
 
-This project is brought to you by maragu. See www.maragu.dk for more info.
+This project is brought to you by [maragu](https://www.maragu.dk).
+
+If you like and/or use this project, please consider sponsoring it at [github.com/sponsors/maragudk](https://github.com/sponsors/maragudk).
