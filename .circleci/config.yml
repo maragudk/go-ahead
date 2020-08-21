@@ -5,9 +5,9 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/golang:latest
+      - image: circleci/golang:1.15
       - image: cockroachdb/cockroach:v20.1.4
-        command: [start, --insecure, --listen-addr, ":26258"]
+        command: [start-single-node, --insecure, --listen-addr, ":26258"]
     environment:
       TEST_RESULTS: /tmp/test-results
     steps:
@@ -27,14 +27,7 @@ jobs:
             - "/go/pkg/mod"
       - run:
           name: Waiting for CockroachDB to be ready
-          command: |
-            for i in `seq 1 10`;
-            do
-              nc -z localhost 26258 && echo Success && exit 0
-              echo -n .
-              sleep 1
-            done
-            echo Failed waiting for CockroachDB && exit 1
+          command: dockerize -wait tcp://localhost:26258 -timeout 1m
       - run:
           name: Run tests
           command: |
@@ -50,3 +43,8 @@ jobs:
       - store_artifacts:
           path: /tmp/test-results/cover.html
           destination: cover.html
+workflows:
+  version: 2
+  build-workflow:
+    jobs:
+      - build
