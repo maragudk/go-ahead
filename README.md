@@ -1,14 +1,19 @@
 # go-ahead
 
-A starter template for SaaS web apps. I use this for quickly getting a new web app set up.
+A starter template for SaaS web apps.
 
-## Features
+## Features and roadmap
 
-- Starts serving HTTP on an internal and an external interface
-- Prometheus metrics exposed at `/metrics` on the internal interface
-- A `/health` endpoint for load balancers on the internal interface
-- Ready to connect to CockroachDB, set up in development through Docker Compose
-- …and of course the building, (integration) testing, linting etc. set up in the `Makefile`
+- Basic web app scaffold with best practice project layout and single-binary deployment
+- Metrics using Prometheus integration
+- Stateless app ready for working behind a load balancer
+- Unit and integration tests using Docker Compose, with CI using Github Actions and CircleCI
+
+### Roadmap
+
+- Stripe integration for subscription payments
+- Authentication and authorization without third-party dependencies
+- Admininistration panel
 
 ## Usage
 
