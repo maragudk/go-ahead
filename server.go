@@ -1,4 +1,4 @@
-package ahead
+package server
 
 import (
 	"errors"
@@ -26,7 +26,7 @@ type Server struct {
 	internalMux  *chi.Mux
 }
 
-type NewServerOptions struct {
+type Options struct {
 	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
@@ -34,7 +34,8 @@ type NewServerOptions struct {
 	Version      string
 }
 
-func NewServer(options NewServerOptions) *Server {
+// New creates a new Server.
+func New(options Options) *Server {
 	return &Server{
 		Storer:       options.Storer,
 		ExternalPort: options.ExternalPort,

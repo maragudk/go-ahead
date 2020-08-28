@@ -1,4 +1,4 @@
-package ahead
+package server
 
 import (
 	"go-ahead/handlers"

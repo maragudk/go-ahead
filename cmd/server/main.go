@@ -8,8 +8,6 @@ import (
 	"go-ahead/storage"
 )
 
-const Version = "VERSION"
-
 func main() {
 	// Disable timestamps in logger
 	log.SetFlags(0)
@@ -21,7 +19,7 @@ func main() {
 		log.Fatalln("Could not read config file:", err)
 	}
 
-	s := ahead.NewServer(ahead.NewServerOptions{
+	s := server.New(server.Options{
 		Storer:       createStorer(c),
 		ExternalPort: c.ExternalPort,
 		InternalPort: c.InternalPort,
