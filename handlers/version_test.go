@@ -1,4 +1,4 @@
-package ahead
+package handlers
 
 import (
 	"net/http"
@@ -7,10 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestServer_versionHandler(t *testing.T) {
+func TestVersionHandler(t *testing.T) {
 	t.Run("prints the version number", func(t *testing.T) {
-		s := NewServer(NewServerOptions{Name: "appy", Version: "123abc"})
-		code, body := makeGETRequest(s.versionHandler(), "/version")
+		code, body := makeGETRequest(VersionHandler("appy", "123abc"), "/version")
 
 		require.Equal(t, http.StatusOK, code)
 		require.Equal(t, "appy 123abc", body)

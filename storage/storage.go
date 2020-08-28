@@ -93,7 +93,13 @@ func (s *Storer) createDataSourceName(cockroachSchema bool) string {
 	return dataSourceName
 }
 
-// Ping without a timeout.
-func (s *Storer) Ping() error {
-	return s.DB.Ping()
+// Ping the db with the given context and runs a "select 1".
+func (s *Storer) Ping(ctx context.Context) error {
+	if err := s.DB.PingContext(ctx); err != nil {
+		return errors2.Wrap(err, "could not ping")
+	}
+	if _, err := s.DB.ExecContext(ctx, "select 1"); err != nil {
+		return errors2.Wrap(err, "could not select 1")
+	}
+	return nil
 }
