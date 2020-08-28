@@ -10,7 +10,7 @@ type Config struct {
 	Name         string
 	ExternalPort int
 	InternalPort int
-	Database     struct {
+	Storer       struct {
 		Host     string
 		Port     int
 		User     string

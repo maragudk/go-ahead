@@ -14,7 +14,7 @@ func main() {
 	// Disable timestamps in logger
 	log.SetFlags(0)
 
-	path := flag.String("config", "ahead.toml", "Path of config file in TOML format")
+	path := flag.String("config", "development.toml", "Path of config file in TOML format")
 	flag.Parse()
 	c, err := ReadConfig(*path)
 	if err != nil {
@@ -36,12 +36,12 @@ func main() {
 
 func createStorer(c Config) *storage.Storer {
 	return storage.NewStorer(storage.NewStorerOptions{
-		User:     c.Database.User,
-		Host:     c.Database.Host,
-		Port:     c.Database.Port,
-		Database: c.Database.Database,
-		Cert:     c.Database.Cert,
-		Key:      c.Database.Key,
-		RootCert: c.Database.RootCert,
+		User:     c.Storer.User,
+		Host:     c.Storer.Host,
+		Port:     c.Storer.Port,
+		Database: c.Storer.Database,
+		Cert:     c.Storer.Cert,
+		Key:      c.Storer.Key,
+		RootCert: c.Storer.RootCert,
 	})
 }
