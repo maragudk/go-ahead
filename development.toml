@@ -2,7 +2,7 @@ Name = "ahead"
 ExternalPort = 2020
 InternalPort = 2021
 
-[Database]
+[Storer]
 Host = "localhost"
 Port = 26257
 User = "ahead"
