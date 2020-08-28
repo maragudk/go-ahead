@@ -2,8 +2,6 @@ version: '3.7'
 services:
   db:
     command: start-single-node --certs-dir=/certs --store=/cockroach-data --listen-addr=0.0.0.0:26257
-    container_name: db
-    hostname: db
     image: cockroachdb/cockroach:v20.1.4
     ports:
       - 26257:26257
