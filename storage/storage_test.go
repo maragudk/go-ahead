@@ -3,6 +3,7 @@
 package storage_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -19,7 +20,7 @@ func TestStorer_Ping(t *testing.T) {
 		s, cleanup := storagetest.CreateStorer()
 		defer cleanup()
 
-		err := s.Ping()
+		err := s.Ping(context.Background())
 		require.NoError(t, err)
 	})
 }

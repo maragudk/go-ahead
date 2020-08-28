@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/coreos/go-systemd/daemon"
+	"github.com/go-chi/chi"
 
 	"go-ahead/errors2"
 	"go-ahead/storage"
@@ -21,8 +22,8 @@ type Server struct {
 	InternalPort int
 	Name         string
 	Version      string
-	externalMux  *http.ServeMux
-	internalMux  *http.ServeMux
+	externalMux  *chi.Mux
+	internalMux  *chi.Mux
 }
 
 type NewServerOptions struct {
@@ -40,8 +41,8 @@ func NewServer(options NewServerOptions) *Server {
 		InternalPort: options.InternalPort,
 		Name:         options.Name,
 		Version:      options.Version,
-		externalMux:  http.NewServeMux(),
-		internalMux:  http.NewServeMux(),
+		externalMux:  chi.NewRouter(),
+		internalMux:  chi.NewRouter(),
 	}
 }
 
@@ -54,7 +55,8 @@ func (s *Server) Start() error {
 		return err
 	}
 
-	s.setupRoutes()
+	s.setupInternalRoutes()
+	s.setupExternalRoutes()
 
 	go func() {
 		if err := s.listenAndServeInternal(hostname); err != nil {
@@ -74,12 +76,6 @@ func (s *Server) Start() error {
 
 	err := <-errs
 	return errors2.Wrap(err, "could not listen and serve")
-}
-
-func (s *Server) setupRoutes() {
-	s.setupHealthHandler()
-	s.setupVersionHandler()
-	s.setupMetricsHandler()
 }
 
 // listenAndServeExternal on the external port. Note that all routes should be defined on externalMux before calling this.

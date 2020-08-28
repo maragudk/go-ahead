@@ -1,4 +1,4 @@
-package ahead
+package handlers
 
 import (
 	"net/http"
@@ -7,10 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestServer_metricsHandler(t *testing.T) {
+func TestMetricsHandler(t *testing.T) {
 	t.Run("sets up a handler that writes prometheus metrics on /metrics", func(t *testing.T) {
-		s := NewServer(NewServerOptions{})
-		code, body := makeGETRequest(s.metricsHandler(), "/metrics")
+		code, body := makeGETRequest(MetricsHandler(), "/metrics")
 
 		require.Equal(t, http.StatusOK, code)
 		require.NotEmpty(t, body)
