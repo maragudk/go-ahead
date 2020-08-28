@@ -10,7 +10,10 @@ type Config struct {
 	Name         string
 	ExternalPort int
 	InternalPort int
-	Storer       struct {
+	Emailer      struct {
+		Token string
+	}
+	Storer struct {
 		Host     string
 		Port     int
 		User     string

@@ -11,12 +11,14 @@ import (
 	"github.com/coreos/go-systemd/daemon"
 	"github.com/go-chi/chi"
 
+	"go-ahead/comms"
 	"go-ahead/errors2"
 	"go-ahead/storage"
 )
 
 // Server takes requests and responds. 😎
 type Server struct {
+	Emailer      *comms.Emailer
 	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
@@ -27,6 +29,7 @@ type Server struct {
 }
 
 type Options struct {
+	Emailer      *comms.Emailer
 	Storer       *storage.Storer
 	ExternalPort int
 	InternalPort int
@@ -37,6 +40,7 @@ type Options struct {
 // New creates a new Server.
 func New(options Options) *Server {
 	return &Server{
+		Emailer:      options.Emailer,
 		Storer:       options.Storer,
 		ExternalPort: options.ExternalPort,
 		InternalPort: options.InternalPort,

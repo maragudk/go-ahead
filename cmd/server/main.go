@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"go-ahead/comms"
 	"go-ahead/server"
 	"go-ahead/storage"
 )
@@ -20,6 +21,7 @@ func main() {
 	}
 
 	s := server.New(server.Options{
+		Emailer:      createEmailer(c),
 		Storer:       createStorer(c),
 		ExternalPort: c.ExternalPort,
 		InternalPort: c.InternalPort,
@@ -42,4 +44,8 @@ func createStorer(c Config) *storage.Storer {
 		Key:      c.Storer.Key,
 		RootCert: c.Storer.RootCert,
 	})
+}
+
+func createEmailer(c Config) *comms.Emailer {
+	return comms.NewEmailer(c.Emailer.Token)
 }
