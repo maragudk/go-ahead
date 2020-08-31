@@ -1,0 +1,12 @@
+app.example.com {
+  reverse_proxy {
+    to localhost:2020
+    # to otherhost1:2020
+    # to otherhost2:2020
+
+    health_path /health
+    health_port 2021
+    health_interval 10s
+    health_timeout 5s
+  }
+}
