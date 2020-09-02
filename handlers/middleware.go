@@ -14,3 +14,13 @@ func NoClickjacking(next http.Handler) http.Handler {
 		next.ServeHTTP(w, r)
 	})
 }
+
+// StrictContentSecurityPolicy sets best practice CSP headers.
+// This disallows all external img, script, and style links, and disallows all objects (flash etc.).
+// See https://infosec.mozilla.org/guidelines/web_security#content-security-policy
+func StrictContentSecurityPolicy(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Security-Policy", "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'")
+		next.ServeHTTP(w, r)
+	})
+}

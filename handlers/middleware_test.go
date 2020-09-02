@@ -16,3 +16,12 @@ func TestNoClickjacking(t *testing.T) {
 		require.Equal(t, "1; mode=block", header.Get("X-XSS-Protection"))
 	})
 }
+
+func TestStrictContentSecurityPolicy(t *testing.T) {
+	t.Run("sets the csp headers", func(t *testing.T) {
+		h := StrictContentSecurityPolicy(noopHandler())
+		code, header, _ := makeGETRequest(h, "/")
+		require.Equal(t, http.StatusOK, code)
+		require.Equal(t, "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'", header.Get("Content-Security-Policy"))
+	})
+}
