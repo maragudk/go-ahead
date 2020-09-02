@@ -3,6 +3,7 @@ package storage
 import (
 	"context"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"time"
 
@@ -26,6 +27,7 @@ type Storer struct {
 	cert     string
 	key      string
 	rootCert string
+	log      *log.Logger
 }
 
 type NewStorerOptions struct {
@@ -37,9 +39,14 @@ type NewStorerOptions struct {
 	Cert     string
 	Key      string
 	RootCert string
+	Logger   *log.Logger
 }
 
 func NewStorer(options NewStorerOptions) *Storer {
+	logger := options.Logger
+	if logger == nil {
+		logger = log.New(ioutil.Discard, "", 0)
+	}
 	return &Storer{
 		appName:  options.AppName,
 		user:     options.User,
@@ -49,6 +56,7 @@ func NewStorer(options NewStorerOptions) *Storer {
 		cert:     options.Cert,
 		key:      options.Key,
 		rootCert: options.RootCert,
+		log:      logger,
 	}
 }
 
@@ -60,7 +68,7 @@ func (s *Storer) Connect() error {
 
 	dataSourceName := s.createDataSourceName(false)
 
-	log.Println("Connecting to db on", dataSourceName)
+	s.log.Println("Connecting to db on", dataSourceName)
 	var err error
 	s.DB, err = sqlx.ConnectContext(ctx, "postgres", dataSourceName)
 	if err != nil {

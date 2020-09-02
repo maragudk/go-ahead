@@ -64,6 +64,7 @@ test-up:
 up:
 	mkdir -p cockroach-data
 	docker-compose -p ${NAME} up -d
+	sleep 1
 	cockroach sql --certs-dir certs -e "create database if not exists ${NAME};"
 	cockroach sql --certs-dir certs -e "create user if not exists ${NAME};"
 	cockroach sql --certs-dir certs -e "grant select, insert, update, delete on database ${NAME} to ${NAME};"
