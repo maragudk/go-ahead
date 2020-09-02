@@ -20,7 +20,7 @@ func (p *pingerMock) Ping(ctx context.Context) error {
 func TestHealthHandler(t *testing.T) {
 	t.Run("returns OK on no errors", func(t *testing.T) {
 		p := &pingerMock{}
-		code, body := makeGETRequest(HealthHandler(p), "/health")
+		code, _, body := makeGETRequest(HealthHandler(p), "/health")
 
 		require.Equal(t, http.StatusOK, code)
 		require.Equal(t, "OK", body)
