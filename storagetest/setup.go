@@ -6,8 +6,6 @@ import (
 	"bufio"
 	"context"
 	"database/sql"
-	"io/ioutil"
-	"log"
 	"os"
 	"strings"
 	"testing"
@@ -20,14 +18,11 @@ import (
 
 const port = 26258
 
-var testLog = log.New(os.Stderr, "", 0)
-
 // HandleTestMain should be called in TestMain like so:
 // func TestMain(m *testing.M) {
 //   storagetest.HandleTestMain(m)
 // }
 func HandleTestMain(m *testing.M) {
-	log.SetOutput(ioutil.Discard)
 	s := setupDB()
 	code := m.Run()
 	defer func(code int) {
@@ -49,7 +44,7 @@ func createStorer(user string) *storage.Storer {
 func CreateStorer() (*storage.Storer, func()) {
 	s := createStorer("ahead")
 	if err := s.Connect(); err != nil {
-		testLog.Fatalln("Could not connect to db:", err)
+		panic(err)
 	}
 
 	return s, func() {
@@ -60,7 +55,7 @@ func CreateStorer() (*storage.Storer, func()) {
 func CreateRootStorer() (*storage.Storer, func()) {
 	s := createStorer("root")
 	if err := s.Connect(); err != nil {
-		testLog.Fatalln("Could not connect to db:", err)
+		panic(err)
 	}
 
 	return s, func() {

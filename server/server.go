@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -26,11 +27,13 @@ type Server struct {
 	Version      string
 	externalMux  *chi.Mux
 	internalMux  *chi.Mux
+	log          *log.Logger
 }
 
 type Options struct {
 	Emailer      *comms.Emailer
 	Storer       *storage.Storer
+	Logger       *log.Logger
 	ExternalPort int
 	InternalPort int
 	Name         string
@@ -39,6 +42,10 @@ type Options struct {
 
 // New creates a new Server.
 func New(options Options) *Server {
+	logger := options.Logger
+	if logger == nil {
+		logger = log.New(ioutil.Discard, "", 0)
+	}
 	return &Server{
 		Emailer:      options.Emailer,
 		Storer:       options.Storer,
@@ -48,6 +55,7 @@ func New(options Options) *Server {
 		Version:      options.Version,
 		externalMux:  chi.NewRouter(),
 		internalMux:  chi.NewRouter(),
+		log:          logger,
 	}
 }
 
@@ -86,7 +94,7 @@ func (s *Server) Start() error {
 // listenAndServeExternal on the external port. Note that all routes should be defined on externalMux before calling this.
 func (s *Server) listenAndServeExternal(hostname string) error {
 	addr := fmt.Sprintf("%v:%v", hostname, s.ExternalPort)
-	log.Println("Listening for external HTTP on", addr)
+	s.log.Println("Listening for external HTTP on", addr)
 	if err := http.ListenAndServe(addr, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start external http listener")
 	}
@@ -96,7 +104,7 @@ func (s *Server) listenAndServeExternal(hostname string) error {
 // listenAndServeInternal on the internal port. Note that all routes should be defined on internalMux before calling this.
 func (s *Server) listenAndServeInternal(hostname string) error {
 	addr := fmt.Sprintf("%v:%v", hostname, s.InternalPort)
-	log.Println("Listening for internal HTTP on", addr)
+	s.log.Println("Listening for internal HTTP on", addr)
 	if err := http.ListenAndServe(addr, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start internal http listener")
 	}
