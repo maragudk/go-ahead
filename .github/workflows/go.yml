@@ -40,10 +40,3 @@ jobs:
         uses: golangci/golangci-lint-action@v2
         with:
           version: v1.30
-
-      - name: Superlint
-        uses: github/super-linter@v3
-        env:
-          VALIDATE_ALL_CODEBASE: true
-          DEFAULT_BRANCH: master
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
