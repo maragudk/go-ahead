@@ -5,7 +5,7 @@ import (
 )
 
 func (s *Server) setupExternalRoutes() {
-	s.externalMux.Use(handlers.NoClickjacking)
+	s.externalMux.Use(handlers.NoClickjacking, handlers.StrictContentSecurityPolicy)
 
 	s.externalMux.Get("/", handlers.RootHandler(s.Storer))
 }
