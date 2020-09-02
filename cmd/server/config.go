@@ -8,7 +8,9 @@ import (
 
 type Config struct {
 	Name         string
+	ExternalHost string
 	ExternalPort int
+	InternalHost string
 	InternalPort int
 	Emailer      struct {
 		Token string

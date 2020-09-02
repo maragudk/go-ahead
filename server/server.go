@@ -2,12 +2,11 @@ package server
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
-	"os"
-	"strings"
+	"strconv"
 
 	"github.com/coreos/go-systemd/daemon"
 	"github.com/go-chi/chi"
@@ -19,22 +18,24 @@ import (
 
 // Server takes requests and responds. 😎
 type Server struct {
-	Emailer      *comms.Emailer
-	Storer       *storage.Storer
-	ExternalPort int
-	InternalPort int
-	Name         string
-	Version      string
-	externalMux  *chi.Mux
-	internalMux  *chi.Mux
-	log          *log.Logger
+	Emailer         *comms.Emailer
+	Storer          *storage.Storer
+	externalAddress string
+	internalAddress string
+	Name            string
+	Version         string
+	externalMux     *chi.Mux
+	internalMux     *chi.Mux
+	log             *log.Logger
 }
 
 type Options struct {
 	Emailer      *comms.Emailer
 	Storer       *storage.Storer
 	Logger       *log.Logger
+	ExternalHost string
 	ExternalPort int
+	InternalHost string
 	InternalPort int
 	Name         string
 	Version      string
@@ -47,22 +48,20 @@ func New(options Options) *Server {
 		logger = log.New(ioutil.Discard, "", 0)
 	}
 	return &Server{
-		Emailer:      options.Emailer,
-		Storer:       options.Storer,
-		ExternalPort: options.ExternalPort,
-		InternalPort: options.InternalPort,
-		Name:         options.Name,
-		Version:      options.Version,
-		externalMux:  chi.NewRouter(),
-		internalMux:  chi.NewRouter(),
-		log:          logger,
+		Emailer:         options.Emailer,
+		Storer:          options.Storer,
+		externalAddress: net.JoinHostPort(options.ExternalHost, strconv.Itoa(options.ExternalPort)),
+		internalAddress: net.JoinHostPort(options.InternalHost, strconv.Itoa(options.InternalPort)),
+		Name:            options.Name,
+		Version:         options.Version,
+		externalMux:     chi.NewRouter(),
+		internalMux:     chi.NewRouter(),
+		log:             logger,
 	}
 }
 
 // Start the server, setting up listening for HTTP externally and internally, and notify systemd of readiness.
 func (s *Server) Start() error {
-	hostname := getLocalhostOrEmpty()
-	errs := make(chan error)
 
 	if err := s.Storer.Connect(); err != nil {
 		return err
@@ -71,14 +70,15 @@ func (s *Server) Start() error {
 	s.setupInternalRoutes()
 	s.setupExternalRoutes()
 
+	errs := make(chan error)
 	go func() {
-		if err := s.listenAndServeInternal(hostname); err != nil {
+		if err := s.listenAndServeInternal(); err != nil {
 			errs <- err
 		}
 	}()
 
 	go func() {
-		if err := s.listenAndServeExternal(hostname); err != nil {
+		if err := s.listenAndServeExternal(); err != nil {
 			errs <- err
 		}
 	}()
@@ -91,35 +91,20 @@ func (s *Server) Start() error {
 	return errors2.Wrap(err, "could not listen and serve")
 }
 
-// listenAndServeExternal on the external port. Note that all routes should be defined on externalMux before calling this.
-func (s *Server) listenAndServeExternal(hostname string) error {
-	addr := fmt.Sprintf("%v:%v", hostname, s.ExternalPort)
-	s.log.Println("Listening for external HTTP on", addr)
-	if err := http.ListenAndServe(addr, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
+// listenAndServeExternal on the external address. Note that all routes should be defined on externalMux before calling this.
+func (s *Server) listenAndServeExternal() error {
+	s.log.Println("Listening for external HTTP on", s.externalAddress)
+	if err := http.ListenAndServe(s.externalAddress, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start external http listener")
 	}
 	return nil
 }
 
-// listenAndServeInternal on the internal port. Note that all routes should be defined on internalMux before calling this.
-func (s *Server) listenAndServeInternal(hostname string) error {
-	addr := fmt.Sprintf("%v:%v", hostname, s.InternalPort)
-	s.log.Println("Listening for internal HTTP on", addr)
-	if err := http.ListenAndServe(addr, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
+// listenAndServeInternal on the internal address. Note that all routes should be defined on internalMux before calling this.
+func (s *Server) listenAndServeInternal() error {
+	s.log.Println("Listening for internal HTTP on", s.internalAddress)
+	if err := http.ListenAndServe(s.internalAddress, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start internal http listener")
 	}
 	return nil
-}
-
-// getLocalhostOrEmpty tries to figure out whether we're on a development machine, in which case we listen on localhost only.
-// Otherwise, return the empty string.
-func getLocalhostOrEmpty() string {
-	hostname, err := os.Hostname()
-	if err != nil {
-		return ""
-	}
-	if strings.Contains(hostname, ".local") {
-		return "localhost"
-	}
-	return ""
 }

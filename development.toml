@@ -1,5 +1,7 @@
 Name = "ahead"
+ExternalHost = "localhost"
 ExternalPort = 2020
+InternalHost = "localhost"
 InternalPort = 2021
 
 [Storer]
