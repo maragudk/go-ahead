@@ -17,7 +17,7 @@ create table group_membership (
 -- group_ownership defines who owns a group.
 -- Note that a user cannot be deleted if the user is a group owner.
 create table group_ownership (
-   group_id uuid references groups(id) on delete cascade,
-   user_id uuid references users(id),
-   primary key (group_id, user_id)
+  group_id uuid references groups(id) on delete cascade,
+  user_id uuid references users(id),
+  primary key (group_id, user_id)
 );
