@@ -43,7 +43,7 @@ jobs:
 
       - name: Superlint
         uses: github/super-linter@v3
-          env:
-            VALIDATE_ALL_CODEBASE: true
-            DEFAULT_BRANCH: master
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          VALIDATE_ALL_CODEBASE: true
+          DEFAULT_BRANCH: master
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
