@@ -8,8 +8,8 @@ import (
 )
 
 // makeGETRequest against the given handler and target URL path.
-// Returns the status code and response body.
-func makeGETRequest(handler http.Handler, target string) (int, string) {
+// Returns the status code, headers, and response body.
+func makeGETRequest(handler http.Handler, target string) (int, http.Header, string) {
 	req := httptest.NewRequest(http.MethodGet, target, nil)
 	recorder := httptest.NewRecorder()
 	handler.ServeHTTP(recorder, req)
@@ -18,5 +18,11 @@ func makeGETRequest(handler http.Handler, target string) (int, string) {
 	if err != nil {
 		panic(err)
 	}
-	return result.StatusCode, strings.TrimSpace(string(resultBody))
+	return result.StatusCode, result.Header, strings.TrimSpace(string(resultBody))
+}
+
+func noopHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+	}
 }
