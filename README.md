@@ -1,5 +1,7 @@
 # go-ahead
 
+[![codecov](https://codecov.io/gh/maragudk/go-ahead/branch/master/graph/badge.svg)](https://codecov.io/gh/maragudk/go-ahead)
+
 A SaaS web app starter template written in Go.
 
 ## Features
