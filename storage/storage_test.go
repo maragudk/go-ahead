@@ -11,10 +11,6 @@ import (
 	"go-ahead/storagetest"
 )
 
-func TestMain(m *testing.M) {
-	storagetest.HandleTestMain(m)
-}
-
 func TestStorer_Ping(t *testing.T) {
 	t.Run("pings with no error", func(t *testing.T) {
 		s, cleanup := storagetest.CreateStorer()

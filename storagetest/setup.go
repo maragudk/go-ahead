@@ -8,28 +8,12 @@ import (
 	"database/sql"
 	"os"
 	"strings"
-	"testing"
 	"time"
-
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	"go-ahead/storage"
 )
 
 const port = 26258
-
-// HandleTestMain should be called in TestMain like so:
-// func TestMain(m *testing.M) {
-//   storagetest.HandleTestMain(m)
-// }
-func HandleTestMain(m *testing.M) {
-	s := setupDB()
-	code := m.Run()
-	defer func(code int) {
-		dropDB(s)
-		os.Exit(code)
-	}(code)
-}
 
 func createStorer(user string) *storage.Storer {
 	return storage.NewStorer(storage.NewStorerOptions{
@@ -42,24 +26,25 @@ func createStorer(user string) *storage.Storer {
 }
 
 func CreateStorer() (*storage.Storer, func()) {
+	rootStorer := setupDB()
 	s := createStorer("ahead")
 	if err := s.Connect(); err != nil {
 		panic(err)
 	}
 
 	return s, func() {
-		// Do cleanup, nothing yet
+		dropDB(rootStorer)
 	}
 }
 
 func CreateRootStorer() (*storage.Storer, func()) {
-	s := createStorer("root")
+	s := setupDB()
 	if err := s.Connect(); err != nil {
 		panic(err)
 	}
 
 	return s, func() {
-		// Do cleanup, nothing yet
+		dropDB(s)
 	}
 }
 
