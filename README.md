@@ -11,6 +11,7 @@ A SaaS web app starter template written in Go.
 - Transactional emails using [Postmark](https://postmarkapp.com)
 - Unit and integration tests using [Docker Compose](https://docs.docker.com/compose/),
   with CI using Github Actions and [CircleCI](https://circleci.com)
+- Views using [gomponents](https://github.com/maragudk/gomponents) and [TailwindCSS](https://tailwindcss.com)
 
 ### Roadmap
 

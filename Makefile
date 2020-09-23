@@ -1,4 +1,5 @@
-.PHONY: bindata build clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-up start test test-down test-integration test-up up
+.PHONY: bindata build build-css clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-goto migrate-up \
+	start test test-down test-integration test-up up
 
 export NAME := ahead
 export VERSION := `git rev-parse --short HEAD`
@@ -12,6 +13,9 @@ build:
 	GOOS=linux GOARCH=amd64 go build -o ${NAME} cmd/server/*.go
 	sed -i.bak "s/${VERSION}/VERSION/g" cmd/server/version.go
 	rm cmd/server/version.go.bak
+
+build-css:
+	NODE_ENV=production ./node_modules/.bin/tailwindcss build app.css -o public/styles/app.css
 
 clean:
 	rm -rf certs
@@ -46,7 +50,7 @@ migrate-goto:
 migrate-up:
 	migrate -path storage/migrations -database ${MIGRATE_DB_URL} up
 
-start: up
+start:
 	go run cmd/server/*.go start
 
 test:

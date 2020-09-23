@@ -1,11 +1,16 @@
 package handlers
 
 import (
+	"context"
 	"io"
 	"log"
 	"net/http"
 	"os"
 )
+
+type pinger interface {
+	Ping(context.Context) error
+}
 
 // HealthHandler for load balancers to check if this node is alive.
 // It can also print a log line to stderr.

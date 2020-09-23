@@ -93,7 +93,7 @@ func (s *Server) Start() error {
 
 // listenAndServeExternal on the external address. Note that all routes should be defined on externalMux before calling this.
 func (s *Server) listenAndServeExternal() error {
-	s.log.Println("Listening for external HTTP on", s.externalAddress)
+	s.log.Printf("Listening for external HTTP on http://%v\n", s.externalAddress)
 	if err := http.ListenAndServe(s.externalAddress, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start external http listener")
 	}
@@ -102,7 +102,7 @@ func (s *Server) listenAndServeExternal() error {
 
 // listenAndServeInternal on the internal address. Note that all routes should be defined on internalMux before calling this.
 func (s *Server) listenAndServeInternal() error {
-	s.log.Println("Listening for internal HTTP on", s.internalAddress)
+	s.log.Printf("Listening for internal HTTP on http://%v\n", s.internalAddress)
 	if err := http.ListenAndServe(s.internalAddress, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start internal http listener")
 	}
