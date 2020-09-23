@@ -1,0 +1,8 @@
+{
+  "name": "go-ahead",
+  "private": true,
+  "dependencies": {
+    "@tailwindcss/ui": "^0.6.2",
+    "tailwindcss": "^1.8.10"
+  }
+}

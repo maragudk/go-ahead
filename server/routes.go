@@ -1,13 +1,18 @@
 package server
 
 import (
+	"net/http"
+
 	"go-ahead/handlers"
 )
 
 func (s *Server) setupExternalRoutes() {
 	s.externalMux.Use(handlers.NoClickjacking, handlers.StrictContentSecurityPolicy)
 
-	s.externalMux.Get("/", handlers.RootHandler(s.Storer))
+	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("public")))
+	s.externalMux.Get("/static/*", staticHandler.ServeHTTP)
+
+	s.externalMux.Get("/", handlers.RootHandler())
 }
 
 func (s *Server) setupInternalRoutes() {

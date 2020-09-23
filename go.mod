@@ -8,6 +8,7 @@ require (
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/golang-migrate/migrate/v4 v4.12.2
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/maragudk/gomponents v0.3.0
 	github.com/prometheus/client_golang v1.7.1
 	github.com/prometheus/common v0.12.0 // indirect
 	github.com/stretchr/testify v1.6.1
