@@ -12,6 +12,8 @@ type Config struct {
 	ExternalPort int
 	InternalHost string
 	InternalPort int
+	Cert         string
+	Key          string
 	Emailer      struct {
 		Token string
 	}

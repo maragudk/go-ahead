@@ -3,6 +3,8 @@ ExternalHost = "localhost"
 ExternalPort = 2020
 InternalHost = "localhost"
 InternalPort = 2021
+Cert = "cert.pem"
+Key = "key.pem"
 
 [Storer]
 Host = "localhost"

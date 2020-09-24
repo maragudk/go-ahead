@@ -27,6 +27,8 @@ type Server struct {
 	externalMux     *chi.Mux
 	internalMux     *chi.Mux
 	log             *log.Logger
+	cert            string
+	key             string
 }
 
 type Options struct {
@@ -39,6 +41,8 @@ type Options struct {
 	InternalPort int
 	Name         string
 	Version      string
+	Cert         string
+	Key          string
 }
 
 // New creates a new Server.
@@ -57,6 +61,8 @@ func New(options Options) *Server {
 		externalMux:     chi.NewRouter(),
 		internalMux:     chi.NewRouter(),
 		log:             logger,
+		cert:            options.Cert,
+		key:             options.Key,
 	}
 }
 
@@ -93,6 +99,13 @@ func (s *Server) Start() error {
 
 // listenAndServeExternal on the external address. Note that all routes should be defined on externalMux before calling this.
 func (s *Server) listenAndServeExternal() error {
+	if s.key != "" && s.cert != "" {
+		s.log.Printf("Listening for external HTTPS on https://%v\n", s.externalAddress)
+		if err := http.ListenAndServeTLS(s.externalAddress, s.cert, s.key, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return errors2.Wrap(err, "could not start external https listener")
+		}
+		return nil
+	}
 	s.log.Printf("Listening for external HTTP on http://%v\n", s.externalAddress)
 	if err := http.ListenAndServe(s.externalAddress, s.externalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start external http listener")
@@ -102,6 +115,13 @@ func (s *Server) listenAndServeExternal() error {
 
 // listenAndServeInternal on the internal address. Note that all routes should be defined on internalMux before calling this.
 func (s *Server) listenAndServeInternal() error {
+	if s.key != "" && s.cert != "" {
+		s.log.Printf("Listening for internal HTTPS on https://%v\n", s.internalAddress)
+		if err := http.ListenAndServeTLS(s.internalAddress, s.cert, s.key, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			return errors2.Wrap(err, "could not start internal http listener")
+		}
+		return nil
+	}
 	s.log.Printf("Listening for internal HTTP on http://%v\n", s.internalAddress)
 	if err := http.ListenAndServe(s.internalAddress, s.internalMux); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return errors2.Wrap(err, "could not start internal http listener")

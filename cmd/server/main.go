@@ -30,6 +30,8 @@ func main() {
 		InternalPort: c.InternalPort,
 		Name:         c.Name,
 		Version:      Version,
+		Cert:         c.Cert,
+		Key:          c.Key,
 	})
 
 	if err := s.Start(); err != nil {
