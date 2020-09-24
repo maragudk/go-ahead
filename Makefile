@@ -1,5 +1,5 @@
-.PHONY: bindata build build-css clean cockroach-certs cockroach-sql cover down lint migrate-create migrate-goto migrate-up \
-	start test test-down test-integration test-up up
+.PHONY: bindata build build-css certs clean cockroach-certs cockroach-sql cover down lint \
+	migrate-create migrate-goto migrate-up start test test-down test-integration test-up up
 
 export NAME := ahead
 export VERSION := `git rev-parse --short HEAD`
@@ -16,6 +16,9 @@ build:
 
 build-css:
 	NODE_ENV=production ./node_modules/.bin/tailwindcss build app.css -o public/styles/app.css
+
+certs: generate_cert.go
+	go run generate_cert.go --rsa-bits=2048 --host=localhost
 
 clean:
 	rm -rf certs
@@ -37,6 +40,9 @@ cover:
 
 down:
 	docker-compose -p ${NAME} down
+
+generate_cert.go:
+	wget "https://raw.githubusercontent.com/golang/go/master/src/crypto/tls/generate_cert.go"
 
 lint:
 	golangci-lint run
