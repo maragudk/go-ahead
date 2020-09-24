@@ -54,11 +54,11 @@ func Navbar(path string) g.Node {
 func NavbarLink(href, text string, active bool) g.Node {
 	return g.El("a",
 		g.Attr("href", href),
-		attr.Classes(map[string]bool{
+		attr.Classes{
 			"px-3 py-2 rounded-md text-sm font-medium":                                                               true,
 			"text-white bg-gray-900 focus:outline-none focus:text-white focus:bg-gray-700":                           active,
 			"text-gray-300 hover:text-white hover:bg-gray-700 focus:outline-none focus:text-white focus:bg-gray-700": !active,
-		}),
+		},
 		g.Text(text),
 	)
 }
