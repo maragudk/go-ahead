@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 	"github.com/coreos/go-systemd/daemon"
 	"github.com/go-chi/chi"
 
@@ -29,6 +31,7 @@ type Server struct {
 	log             *log.Logger
 	cert            string
 	key             string
+	sm              *scs.SessionManager
 }
 
 type Options struct {
@@ -63,6 +66,7 @@ func New(options Options) *Server {
 		log:             logger,
 		cert:            options.Cert,
 		key:             options.Key,
+		sm:              scs.New(),
 	}
 }
 
@@ -72,6 +76,9 @@ func (s *Server) Start() error {
 	if err := s.Storer.Connect(); err != nil {
 		return err
 	}
+
+	s.sm.Store = postgresstore.NewWithCleanupInterval(s.Storer.DB.DB, 0)
+	s.sm.Cookie.Secure = true
 
 	s.setupInternalRoutes()
 	s.setupExternalRoutes()

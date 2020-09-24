@@ -12,7 +12,8 @@ func (s *Server) setupExternalRoutes() {
 	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("public")))
 	s.externalMux.Get("/static/*", staticHandler.ServeHTTP)
 
-	s.externalMux.Get("/", handlers.RootHandler())
+	s.externalMux.Get("/", handlers.HomeHandler())
+	s.externalMux.Get("/login", handlers.LoginHandler())
 }
 
 func (s *Server) setupInternalRoutes() {

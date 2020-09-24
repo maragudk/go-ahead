@@ -8,12 +8,12 @@ import (
 	"go-ahead/views"
 )
 
-// RootHandler handles /.
-func RootHandler() http.HandlerFunc {
+func LoginHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		page := views.Page(views.PageProps{
-			Title: "Home",
+			Title: "Login",
 			Path:  r.URL.Path,
+			Body:  views.Login(),
 		})
 		_ = g.Write(w, page)
 	}

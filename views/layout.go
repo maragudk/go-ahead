@@ -9,6 +9,7 @@ import (
 type PageProps struct {
 	Title string
 	Path  string
+	Body  g.Node
 }
 
 func Page(props PageProps) g.Node {
@@ -23,6 +24,7 @@ func Page(props PageProps) g.Node {
 			el.Body(
 				Navbar(props.Path),
 				Header(props.Title),
+				props.Body,
 			),
 		),
 	)
@@ -40,8 +42,13 @@ func Navbar(path string) g.Node {
 						el.Div(attr.Class("block"),
 							el.Div(attr.Class("ml-10 flex items-baseline space-x-4"),
 								NavbarLink("/", "Home", path == "/"),
-								NavbarLink("#", "Page 1", path == "/page1"),
-								NavbarLink("#", "Page 2", path == "/page2"),
+							),
+						),
+					),
+					el.Div(attr.Class("flex items-center"),
+						el.Div(attr.Class("block"),
+							el.Div(attr.Class("ml-10 flex items-baseline space-x-4"),
+								NavbarLink("/login", "Log in", path == "/login"),
 							),
 						),
 					),
