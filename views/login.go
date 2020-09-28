@@ -1,12 +1,25 @@
 package views
 
 import (
+	"net/http"
+
 	g "github.com/maragudk/gomponents"
 	"github.com/maragudk/gomponents/attr"
 	"github.com/maragudk/gomponents/el"
 )
 
-func Login() g.NodeFunc {
+func Login() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		page := Page(PageProps{
+			Title: "Log in",
+			Path:  r.URL.Path,
+			Body:  loginBody(),
+		})
+		_ = g.Write(w, page)
+	}
+}
+
+func loginBody() g.NodeFunc {
 	return el.Div(
 		el.Form("/login", "post", attr.Class("max-w-sm mx-auto space-y-6"),
 			el.Div(

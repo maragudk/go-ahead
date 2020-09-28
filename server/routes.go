@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 
 	"go-ahead/handlers"
+	"go-ahead/views"
 )
 
 func (s *Server) setupExternalRoutes() {
@@ -16,10 +17,10 @@ func (s *Server) setupExternalRoutes() {
 	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("public")))
 	s.externalMux.Get("/static/*", staticHandler.ServeHTTP)
 
-	s.externalMux.Get("/", handlers.HomeHandler())
+	s.externalMux.Get("/", views.Home())
 
 	s.externalMux.Route("/login", func(r chi.Router) {
-		r.Get("/", handlers.LoginHandler())
+		r.Get("/", views.Login())
 	})
 }
 
