@@ -4,11 +4,8 @@ create table users (
   name string not null,
   email string unique not null,
   password string not null,
-  language string not null default 'en-us',
-  timezone string not null default 'CET',
-  preferences jsonb not null default '{}',
-  created_at timestamp not null default current_timestamp(),
-  updated_at timestamp not null default current_timestamp()
+  created timestamp not null default current_timestamp(),
+  updated timestamp not null default current_timestamp()
 );
 
 -- account_membership defines who is part of an account.

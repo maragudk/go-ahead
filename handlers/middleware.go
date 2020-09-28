@@ -1,8 +1,13 @@
 package handlers
 
 import (
+	"context"
 	"net/http"
+
+	"go-ahead/model"
 )
+
+type Middleware = func(http.Handler) http.Handler
 
 // NoClickjacking middleware sets headers to disallow frame embedding and XSS protection for older browsers.
 // See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Frame-Options
@@ -23,4 +28,39 @@ func StrictContentSecurityPolicy(next http.Handler) http.Handler {
 		w.Header().Set("Content-Security-Policy", "default-src 'none'; img-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'")
 		next.ServeHTTP(w, r)
 	})
+}
+
+// JSONHeader adds a JSON Content-Type header.
+func JSONHeader(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		next.ServeHTTP(w, r)
+	})
+}
+
+type sessionGetter interface {
+	Exists(ctx context.Context, key string) bool
+	Get(ctx context.Context, key string) interface{}
+}
+
+// Authorize checks that there's a user logged in.
+func Authorize(s sessionGetter) Middleware {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if !s.Exists(r.Context(), sessionUserKey) {
+				http.Error(w, "unauthorized, please login", http.StatusUnauthorized)
+				return
+			}
+
+			user, ok := s.Get(r.Context(), sessionUserKey).(model.User)
+			if !ok {
+				http.Error(w, "could not hydrate user", http.StatusInternalServerError)
+				return
+			}
+
+			// We store the user directly in the context instead of having to use the session manager
+			ctx := context.WithValue(r.Context(), contextUserKey, user)
+			next.ServeHTTP(w, r.WithContext(ctx))
+		})
+	}
 }
