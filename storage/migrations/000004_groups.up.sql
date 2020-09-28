@@ -2,9 +2,9 @@
 create table groups (
   id uuid primary key default gen_random_uuid(),
   name string not null,
-  invitation_secret bytes not null default uuid_v4(),
-  created_at timestamp not null default current_timestamp(),
-  updated_at timestamp not null default current_timestamp()
+  invitation_secret bytes not null,
+  created timestamp not null default current_timestamp(),
+  updated timestamp not null default current_timestamp()
 );
 
 -- group_membership defines who's part of a group.

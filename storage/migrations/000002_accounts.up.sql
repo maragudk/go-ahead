@@ -2,6 +2,6 @@
 create table accounts (
   id uuid primary key default gen_random_uuid(),
   name string not null,
-  created_at timestamp not null default current_timestamp(),
-  updated_at timestamp not null default current_timestamp()
+  created timestamp not null default current_timestamp(),
+  updated timestamp not null default current_timestamp()
 );

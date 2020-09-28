@@ -15,6 +15,12 @@ func getRequest(handler http.Handler, target string) (int, http.Header, string) 
 	return request(handler, http.MethodGet, target, nil, "")
 }
 
+// postRequest against the given handler and target URL path.
+// Returns the status code, headers, and response body.
+func postRequest(handler http.Handler, target, body string) (int, http.Header, string) {
+	return request(handler, http.MethodPost, target, nil, body)
+}
+
 // request against the given handler and target URL path.
 // Returns the status code, headers, and response body.
 func request(handler http.Handler, method, target string, ctx context.Context, body string) (int, http.Header, string) {
