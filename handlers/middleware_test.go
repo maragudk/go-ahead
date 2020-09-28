@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"testing"
 
-	"go-ahead/model"
-
 	"github.com/stretchr/testify/require"
+
+	"go-ahead/model"
 )
 
 func TestNoClickjacking(t *testing.T) {
