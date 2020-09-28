@@ -11,7 +11,7 @@ import (
 func LoginHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		page := views.Page(views.PageProps{
-			Title: "Login",
+			Title: "Log in",
 			Path:  r.URL.Path,
 			Body:  views.Login(),
 		})
