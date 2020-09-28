@@ -17,12 +17,13 @@ func (p *pingerMock) Ping(ctx context.Context) error {
 	return nil
 }
 
-func TestHealthHandler(t *testing.T) {
+func TestHealth(t *testing.T) {
 	t.Run("returns OK on no errors", func(t *testing.T) {
 		p := &pingerMock{}
-		code, _, body := makeGETRequest(HealthHandler(p), "/health")
+		code, _, body := getRequest(Health(p), "/health")
 
 		require.Equal(t, http.StatusOK, code)
 		require.Equal(t, "OK", body)
+		require.True(t, p.called)
 	})
 }

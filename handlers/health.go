@@ -12,9 +12,9 @@ type pinger interface {
 	Ping(context.Context) error
 }
 
-// HealthHandler for load balancers to check if this node is alive.
+// Health for load balancers to check if this node is alive.
 // It can also print a log line to stderr.
-func HealthHandler(p pinger) http.HandlerFunc {
+func Health(p pinger) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query()
 		if _, ok := q["logError"]; ok {
