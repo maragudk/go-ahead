@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
-// VersionHandler returns the app name and version.
-func VersionHandler(name, version string) http.HandlerFunc {
+// Version returns the app name and version.
+func Version(name, version string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_, _ = io.WriteString(w, fmt.Sprintf("%v %v", name, version))
 	}

@@ -1,16 +1,34 @@
 package handlers
 
 import (
+	"context"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 )
 
-// makeGETRequest against the given handler and target URL path.
+// getRequest against the given handler and target URL path.
 // Returns the status code, headers, and response body.
-func makeGETRequest(handler http.Handler, target string) (int, http.Header, string) {
-	req := httptest.NewRequest(http.MethodGet, target, nil)
+func getRequest(handler http.Handler, target string) (int, http.Header, string) {
+	return request(handler, http.MethodGet, target, nil, "")
+}
+
+// request against the given handler and target URL path.
+// Returns the status code, headers, and response body.
+func request(handler http.Handler, method, target string, ctx context.Context, body string) (int, http.Header, string) {
+	var bodyReader io.Reader
+	if body != "" {
+		bodyReader = strings.NewReader(body)
+	}
+	req := httptest.NewRequest(method, target, bodyReader)
+	if method == http.MethodPost || method == http.MethodPut {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	}
+	if ctx != nil {
+		req = req.WithContext(ctx)
+	}
 	recorder := httptest.NewRecorder()
 	handler.ServeHTTP(recorder, req)
 	result := recorder.Result()
@@ -22,7 +40,5 @@ func makeGETRequest(handler http.Handler, target string) (int, http.Header, stri
 }
 
 func noopHandler() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-
-	}
+	return func(w http.ResponseWriter, r *http.Request) {}
 }

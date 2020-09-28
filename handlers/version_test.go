@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestVersionHandler(t *testing.T) {
+func TestVersion(t *testing.T) {
 	t.Run("prints the version number", func(t *testing.T) {
-		code, _, body := makeGETRequest(VersionHandler("appy", "123abc"), "/version")
+		code, _, body := getRequest(Version("appy", "123abc"), "/version")
 
 		require.Equal(t, http.StatusOK, code)
 		require.Equal(t, "appy 123abc", body)

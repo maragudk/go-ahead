@@ -6,7 +6,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
-// MetricsHandler returns a new default Prometheus handler.
-func MetricsHandler() http.HandlerFunc {
+// Metrics returns a new default Prometheus handler.
+func Metrics() http.HandlerFunc {
 	return promhttp.Handler().ServeHTTP
 }

@@ -11,21 +11,25 @@ import (
 )
 
 func (s *Server) setupExternalRoutes() {
-	s.externalMux.Use(middleware.Recoverer, handlers.NoClickjacking, handlers.StrictContentSecurityPolicy)
-	s.externalMux.Use(s.sm.LoadAndSave)
+	// The views that can be requested by the browser
+	s.externalMux.Group(func(r chi.Router) {
+		r.Use(middleware.Recoverer, handlers.NoClickjacking, handlers.StrictContentSecurityPolicy)
+		r.Use(s.sm.LoadAndSave)
 
-	staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("public")))
-	s.externalMux.Get("/static/*", staticHandler.ServeHTTP)
+		// Serve static files from the "public" directory
+		staticHandler := http.StripPrefix("/static/", http.FileServer(http.Dir("public")))
+		r.Get("/static/*", staticHandler.ServeHTTP)
 
-	s.externalMux.Get("/", views.Home())
+		r.Get("/", views.Home())
 
-	s.externalMux.Route("/login", func(r chi.Router) {
-		r.Get("/", views.Login())
+		r.Route("/login", func(r chi.Router) {
+			r.Get("/", views.Login())
+		})
 	})
 }
 
 func (s *Server) setupInternalRoutes() {
-	s.internalMux.Get("/health", handlers.HealthHandler(s.Storer))
-	s.internalMux.Get("/version", handlers.VersionHandler(s.Name, s.Version))
-	s.internalMux.Get("/metrics", handlers.MetricsHandler())
+	s.internalMux.Get("/health", handlers.Health(s.Storer))
+	s.internalMux.Get("/version", handlers.Version(s.Name, s.Version))
+	s.internalMux.Get("/metrics", handlers.Metrics())
 }
