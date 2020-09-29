@@ -51,13 +51,19 @@ func (s *Storer) Signup(ctx context.Context, name, email, password string) error
 
 // Login with a given email and password. The password is cleartext and hashed here.
 // Returns the user if succesful, without the password.
+// Note that the password comparison is done no matter what, to combat timing attacks.
+// See https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#compare-password-hashes-using-safe-functions
 func (s *Storer) Login(ctx context.Context, email, password string) (*model.User, error) {
+	// Start by filling in a password, otherwise bcrypt.CompareHashAndPassword returns bcrypt.ErrHashTooShort when no user was found.
 	var user model.User
 	if err := s.DB.Get(&user, loginQuery, email); err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, nil
+		if !errors.Is(err, sql.ErrNoRows) {
+			return nil, err
 		}
-		return nil, err
+
+		// If no user was found, add a random password, or bcrypt.CompareHashAndPassword below
+		// returns early with bcrypt.ErrHashTooShort
+		user.Password = "$2a$10$0flYAPknlgvCeBICHGFKWeMeWRa3ZDcKXVihym71oPXNDcCj//8LC"
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		return nil, nil

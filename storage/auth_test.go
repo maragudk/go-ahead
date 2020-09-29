@@ -85,4 +85,10 @@ func TestStorer_Login(t *testing.T) {
 		require.Equal(t, "me@example.com", user.Email)
 		require.Equal(t, "", user.Password)
 	})
+
+	t.Run("returns no user on no email match and empty passwords", func(t *testing.T) {
+		user, err := s.Login(context.Background(), "you@example.com", "")
+		require.NoError(t, err)
+		require.Nil(t, user)
+	})
 }
