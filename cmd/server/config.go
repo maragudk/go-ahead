@@ -3,9 +3,10 @@ package main
 import (
 	"github.com/BurntSushi/toml"
 
-	"go-ahead/errors2"
+	"github.com/maragudk/go-ahead/errors2"
 )
 
+// Config holds configuration data read from a config file.
 type Config struct {
 	Name         string
 	ExternalHost string

@@ -1,3 +1,4 @@
+// Package views has functions to create HTTP handlers that create views in the form of HTML pages.
 package views
 
 import (
@@ -6,12 +7,14 @@ import (
 	"github.com/maragudk/gomponents/el"
 )
 
+// PageProps are properties for every Page.
 type PageProps struct {
 	Title string
 	Path  string
 	Body  g.Node
 }
 
+// Page returns a g.Node that renders an HTML document with the given props.
 func Page(props PageProps) g.Node {
 	return el.Document(
 		el.HTML(g.Attr("lang", "en"),
@@ -32,12 +35,14 @@ func Page(props PageProps) g.Node {
 	)
 }
 
+// Container restricts the width of the children, centers, and adds some padding.
 func Container(children ...g.Node) g.Node {
 	newChildren := []g.Node{attr.Class("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8")}
 	newChildren = append(newChildren, children...)
 	return el.Div(newChildren...)
 }
 
+// Navbar shows a navigation bar.
 func Navbar(path string) g.Node {
 	return el.Div(
 		g.El("nav", attr.Class("bg-gray-800"),
@@ -66,6 +71,7 @@ func Navbar(path string) g.Node {
 	)
 }
 
+// NavbarLink is a link in the Navbar.
 func NavbarLink(href, text string, active bool) g.Node {
 	return g.El("a",
 		g.Attr("href", href),
@@ -78,6 +84,7 @@ func NavbarLink(href, text string, active bool) g.Node {
 	)
 }
 
+// Header returns a g.Node that renders a headline.
 func Header(title string) g.Node {
 	return g.El("header", attr.Class("bg-white"),
 		Container(

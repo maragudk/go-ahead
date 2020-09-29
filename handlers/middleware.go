@@ -4,9 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"go-ahead/model"
+	"github.com/maragudk/go-ahead/model"
 )
 
+// Middleware is an alias for a function that takes a handler and returns one, too.
 type Middleware = func(http.Handler) http.Handler
 
 // NoClickjacking middleware sets headers to disallow frame embedding and XSS protection for older browsers.
@@ -43,7 +44,7 @@ type sessionGetter interface {
 	Get(ctx context.Context, key string) interface{}
 }
 
-// Authorize checks that there's a user logged in.
+// Authorize checks that there's a user logged in, and otherwise returns HTTP 401 Unauthorized.
 func Authorize(s sessionGetter) Middleware {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

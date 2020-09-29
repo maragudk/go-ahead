@@ -8,6 +8,7 @@ import (
 	"github.com/maragudk/gomponents/el"
 )
 
+// Login creates a handler that returns the login view.
 func Login() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		page := Page(PageProps{

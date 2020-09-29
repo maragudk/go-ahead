@@ -1,3 +1,5 @@
+// Package server holds the main Server that serves HTTP requests to clients,
+// as well as the code that constructs the routes.
 package server
 
 import (
@@ -14,9 +16,9 @@ import (
 	"github.com/coreos/go-systemd/daemon"
 	"github.com/go-chi/chi"
 
-	"go-ahead/comms"
-	"go-ahead/errors2"
-	"go-ahead/storage"
+	"github.com/maragudk/go-ahead/comms"
+	"github.com/maragudk/go-ahead/errors2"
+	"github.com/maragudk/go-ahead/storage"
 )
 
 // Server takes requests and responds. 😎
@@ -35,6 +37,7 @@ type Server struct {
 	sm              *scs.SessionManager
 }
 
+// Options for New.
 type Options struct {
 	Emailer      *comms.Emailer
 	Storer       *storage.Storer
@@ -105,7 +108,8 @@ func (s *Server) Start() error {
 	return errors2.Wrap(err, "could not listen and serve")
 }
 
-// listenAndServeExternal on the external address. Note that all routes should be defined on externalMux before calling this.
+// listenAndServeExternal on the external address.
+// Note that all routes should be defined on externalMux before calling this.
 func (s *Server) listenAndServeExternal() error {
 	server := createHTTPServer(s.externalAddress, s.externalMux, s.log)
 
@@ -123,7 +127,8 @@ func (s *Server) listenAndServeExternal() error {
 	return nil
 }
 
-// listenAndServeInternal on the internal address. Note that all routes should be defined on internalMux before calling this.
+// listenAndServeInternal on the internal address.
+// Note that all routes should be defined on internalMux before calling this.
 func (s *Server) listenAndServeInternal() error {
 	server := createHTTPServer(s.internalAddress, s.internalMux, s.log)
 
@@ -134,6 +139,7 @@ func (s *Server) listenAndServeInternal() error {
 	return nil
 }
 
+// createHTTPServer with aggressive timeouts.
 func createHTTPServer(addr string, handler http.Handler, log *log.Logger) http.Server {
 	return http.Server{
 		Addr:              addr,

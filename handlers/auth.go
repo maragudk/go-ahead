@@ -5,7 +5,7 @@ import (
 	"encoding/gob"
 	"net/http"
 
-	"go-ahead/model"
+	"github.com/maragudk/go-ahead/model"
 )
 
 const (
@@ -22,6 +22,7 @@ type signupper interface {
 	Signup(ctx context.Context, name, email, password string) error
 }
 
+// Signup creates an http.Handler for signing up.
 func Signup(repo signupper) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := r.ParseForm(); err != nil {
@@ -58,6 +59,8 @@ type sessionPutter interface {
 	Put(ctx context.Context, key string, value interface{})
 }
 
+// Login creates an http.Handler for logging in.
+// If the login is succesful, the user data is put into session storage.
 func Login(repo loginner, s sessionPutter) http.HandlerFunc {
 	// Register our user type with the gob encoding used by the session handler
 	gob.Register(model.User{})
@@ -103,6 +106,8 @@ type sessionDestroyer interface {
 	Destroy(ctx context.Context) error
 }
 
+// Login creates an http.Handler for logging out.
+// It just destroys the current user session.
 func Logout(s sessionDestroyer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if err := s.Destroy(r.Context()); err != nil {

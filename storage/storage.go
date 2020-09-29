@@ -1,3 +1,4 @@
+// Package storage provides the Storer, which has all the methods to query the underlying storage database.
 package storage
 
 import (
@@ -9,7 +10,7 @@ import (
 
 	"github.com/jmoiron/sqlx"
 
-	"go-ahead/errors2"
+	"github.com/maragudk/go-ahead/errors2"
 )
 
 const (
@@ -30,6 +31,7 @@ type Storer struct {
 	log      *log.Logger
 }
 
+// NewStorerOptions are options for NewStorer.
 type NewStorerOptions struct {
 	AppName  string
 	User     string
@@ -42,6 +44,8 @@ type NewStorerOptions struct {
 	Logger   *log.Logger
 }
 
+// NewStorer returns a new Storer with the given options.
+// If no logger is provided, the logs are discarded.
 func NewStorer(options NewStorerOptions) *Storer {
 	logger := options.Logger
 	if logger == nil {

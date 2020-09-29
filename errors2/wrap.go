@@ -1,3 +1,4 @@
+// Package errors2 has simple error helpers.
 package errors2
 
 import (

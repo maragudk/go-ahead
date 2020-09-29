@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"go-ahead/storagetest"
+	"github.com/maragudk/go-ahead/storagetest"
 )
 
 func TestStorer_Ping(t *testing.T) {

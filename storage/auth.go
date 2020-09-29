@@ -9,8 +9,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 
-	"go-ahead/errors2"
-	"go-ahead/model"
+	"github.com/maragudk/go-ahead/errors2"
+	"github.com/maragudk/go-ahead/model"
 )
 
 const (

@@ -1,3 +1,4 @@
+// Package comms provides communication-related services, such as the Emailer.
 package comms
 
 import (
@@ -7,7 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"go-ahead/errors2"
+	"github.com/maragudk/go-ahead/errors2"
 )
 
 // Email is an unparsed email address.

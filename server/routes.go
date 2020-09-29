@@ -6,8 +6,8 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 
-	"go-ahead/handlers"
-	"go-ahead/views"
+	"github.com/maragudk/go-ahead/handlers"
+	"github.com/maragudk/go-ahead/views"
 )
 
 func (s *Server) setupExternalRoutes() {
