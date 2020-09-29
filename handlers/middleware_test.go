@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"go-ahead/model"
+	"github.com/maragudk/go-ahead/model"
 )
 
 func TestNoClickjacking(t *testing.T) {

@@ -1,5 +1,5 @@
 {
-  "name": "go-ahead",
+  "name": "github.com/maragudk/go-ahead",
   "private": true,
   "dependencies": {
     "@tailwindcss/ui": "^0.6.2",

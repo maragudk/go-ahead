@@ -1,5 +1,6 @@
 // +build integration
 
+// Package storagetest makes integration testing easier.
 package storagetest
 
 import (
@@ -10,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"go-ahead/storage"
+	"github.com/maragudk/go-ahead/storage"
 )
 
 const port = 26258
@@ -25,6 +26,11 @@ func createStorer(user string) *storage.Storer {
 	})
 }
 
+// CreateStorer for testing.
+// Usage:
+// 	s, cleanup := CreateStorer()
+// 	defer cleanup()
+// 	…
 func CreateStorer() (*storage.Storer, func()) {
 	rootStorer := setupDB()
 	s := createStorer("ahead")
@@ -37,6 +43,8 @@ func CreateStorer() (*storage.Storer, func()) {
 	}
 }
 
+// CreateRootStorer is like CreateStorer, but using the root user.
+// This is primarily for migrations.
 func CreateRootStorer() (*storage.Storer, func()) {
 	s := setupDB()
 	if err := s.Connect(); err != nil {
@@ -65,6 +73,7 @@ func setupDB() *storage.Storer {
 	return s
 }
 
+// dropDB idempotently.
 func dropDB(s *storage.Storer) {
 	executeSQLFromFile(s.DB.DB, "../storagetest/testdata/drop-database.sql")
 }

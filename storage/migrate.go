@@ -5,7 +5,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/database/cockroachdb"
 	"github.com/golang-migrate/migrate/v4/source/go_bindata"
 
-	"go-ahead/errors2"
+	"github.com/maragudk/go-ahead/errors2"
 )
 
 // MigrateTo a specific version.

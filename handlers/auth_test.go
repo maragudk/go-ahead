@@ -10,7 +10,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"go-ahead/model"
+	"github.com/maragudk/go-ahead/model"
 )
 
 var now = time.Date(2020, 9, 7, 12, 0, 0, 0, time.UTC)

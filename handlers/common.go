@@ -1,3 +1,4 @@
+// Package handlers has functions to construct HTTP handlers for both the internal and external API.
 package handlers
 
 import (

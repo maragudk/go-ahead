@@ -1,5 +1,7 @@
 # go-ahead
 
+[![GoDoc](https://godoc.org/github.com/maragudk/go-ahead?status.svg)](https://godoc.org/github.com/maragudk/go-ahead)
+
 A SaaS web app starter template written in Go.
 
 ## Features

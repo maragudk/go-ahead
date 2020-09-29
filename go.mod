@@ -1,4 +1,4 @@
-module go-ahead
+module github.com/maragudk/go-ahead
 
 go 1.15
 

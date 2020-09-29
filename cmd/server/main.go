@@ -1,3 +1,4 @@
+// Package main is the entry point to the application.
 package main
 
 import (
@@ -5,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"go-ahead/comms"
-	"go-ahead/server"
-	"go-ahead/storage"
+	"github.com/maragudk/go-ahead/comms"
+	"github.com/maragudk/go-ahead/server"
+	"github.com/maragudk/go-ahead/storage"
 )
 
 func main() {

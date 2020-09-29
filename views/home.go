@@ -7,6 +7,7 @@ import (
 	"github.com/maragudk/gomponents/el"
 )
 
+// Home creates a handler that returns the home view.
 func Home() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		page := Page(PageProps{

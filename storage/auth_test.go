@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"go-ahead/model"
-	"go-ahead/storagetest"
+	"github.com/maragudk/go-ahead/model"
+	"github.com/maragudk/go-ahead/storagetest"
 )
 
 func TestStorer_Signup(t *testing.T) {
