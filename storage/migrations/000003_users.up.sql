@@ -1,6 +1,6 @@
 -- users has user information and preferences.
 create table users (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   name text not null,
   email text unique not null,
   password text not null,

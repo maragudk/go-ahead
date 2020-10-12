@@ -1,6 +1,6 @@
 -- groups of users are named and have a secret that's used to join the group.
 create table groups (
-  id uuid primary key default uuid_generate_v4(),
+  id uuid primary key default gen_random_uuid(),
   name text not null,
   invitation_secret bytea not null,
   created timestamp not null default now(),
