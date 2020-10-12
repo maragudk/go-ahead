@@ -1,14 +1,23 @@
-version: '3.7'
+version: '3.8'
 services:
   db:
-    command: start-single-node --certs-dir=/certs --store=/cockroach-data --listen-addr=0.0.0.0:26257
-    image: cockroachdb/cockroach:v20.1.4
+    image: postgres:12
+    environment:
+      POSTGRES_USER: ahead
+      POSTGRES_PASSWORD: 123
     ports:
-      - 26257:26257
+      - 5432:5432
     volumes:
       - type: bind
-        source: ./certs
-        target: /certs
-      - type: bind
-        source: ./cockroach-data
-        target: /cockroach-data
+        source: ./data
+        target: /var/lib/postgresql/data
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    ports:
+      - "2020:2020"
+      - "2021:2021"
+    depends_on:
+      - db
+    restart: always

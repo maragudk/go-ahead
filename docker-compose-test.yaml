@@ -1,7 +1,9 @@
-version: '3.7'
+version: '3.8'
 services:
   db:
-    command: start-single-node --insecure --listen-addr=0.0.0.0:26257
-    image: cockroachdb/cockroach:v20.1.4
+    image: postgres:12
+    environment:
+      POSTGRES_USER: ahead
+      POSTGRES_PASSWORD: 123
     ports:
-      - 26258:26257
+      - 5432:5432

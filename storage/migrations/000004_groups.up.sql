@@ -1,10 +1,10 @@
 -- groups of users are named and have a secret that's used to join the group.
 create table groups (
-  id uuid primary key default gen_random_uuid(),
-  name string not null,
-  invitation_secret bytes not null,
-  created timestamp not null default current_timestamp(),
-  updated timestamp not null default current_timestamp()
+  id uuid primary key default uuid_generate_v4(),
+  name text not null,
+  invitation_secret bytea not null,
+  created timestamp not null default now(),
+  updated timestamp not null default now()
 );
 
 -- group_membership defines who's part of a group.

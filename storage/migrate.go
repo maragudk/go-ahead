@@ -2,7 +2,7 @@ package storage
 
 import (
 	"github.com/golang-migrate/migrate/v4"
-	_ "github.com/golang-migrate/migrate/v4/database/cockroachdb"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/go_bindata"
 
 	"github.com/maragudk/go-ahead/errors2"
@@ -45,7 +45,7 @@ func (s *Storer) getMigrator() (*migrate.Migrate, error) {
 	if err != nil {
 		return nil, errors2.Wrap(err, "could not create bindata source driver")
 	}
-	dataSourceName := s.createDataSourceName(true)
+	dataSourceName := s.createDataSourceName()
 	s.log.Println("Connecting on", dataSourceName)
 	m, err := migrate.NewWithSourceInstance("go-bindata", driver, dataSourceName)
 	if err != nil {

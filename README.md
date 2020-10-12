@@ -8,7 +8,7 @@ A SaaS web app starter template written in Go.
 
 - Web app with best practice project layout and single-binary deployment
 - Stateless app ready for working behind a load balancer, such as [Caddy](https://caddyserver.com)
-- Storage using [CockroachDB](https://www.cockroachlabs.com) (but can be easily changed to another database system)
+- Storage using [Postgres](https://www.postgresql.org) (but can be easily changed to another database system)
 - Metrics using [Prometheus](https://prometheus.io)
 - Transactional emails using [Postmark](https://postmarkapp.com)
 - Unit and integration tests using [Docker Compose](https://docs.docker.com/compose/),

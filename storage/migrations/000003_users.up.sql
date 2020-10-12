@@ -1,11 +1,11 @@
 -- users has user information and preferences.
 create table users (
-  id uuid primary key default gen_random_uuid(),
-  name string not null,
-  email string unique not null,
-  password string not null,
-  created timestamp not null default current_timestamp(),
-  updated timestamp not null default current_timestamp()
+  id uuid primary key default uuid_generate_v4(),
+  name text not null,
+  email text unique not null,
+  password text not null,
+  created timestamp not null default now(),
+  updated timestamp not null default now()
 );
 
 -- account_membership defines who is part of an account.
