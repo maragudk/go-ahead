@@ -8,7 +8,7 @@ jobs:
       - image: circleci/golang:1.15
       - image: postgres:12
         environment:
-          POSTGRES_USER: forms
+          POSTGRES_USER: ahead
           POSTGRES_PASSWORD: 123
     environment:
       TEST_RESULTS: /tmp/test-results
