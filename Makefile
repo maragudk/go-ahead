@@ -1,12 +1,8 @@
-.PHONY: bindata build build-css certs clean cover down lint \
-	migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up up-build
+.PHONY: build build-css certs clean cover down lint	migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up up-build
 
 export NAME := ahead
 export VERSION := `git rev-parse --short HEAD`
 export MIGRATE_DB_URL := "postgres://${NAME}:123@localhost:5432/${NAME}?sslmode=disable"
-
-bindata:
-	go-bindata -nometadata -pkg storage -o storage/migrations.go -ignore '.*\.go' -ignore '.DS_Store' -prefix storage/migrations storage/migrations
 
 build:
 	sed -i.bak "s/VERSION/${VERSION}/g" cmd/server/version.go

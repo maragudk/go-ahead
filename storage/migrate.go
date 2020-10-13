@@ -3,7 +3,7 @@ package storage
 import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
-	"github.com/golang-migrate/migrate/v4/source/go_bindata"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 
 	"github.com/maragudk/go-ahead/errors2"
 )
@@ -37,16 +37,8 @@ func (s *Storer) MigrateDown() error {
 }
 
 func (s *Storer) getMigrator() (*migrate.Migrate, error) {
-	// From https://github.com/golang-migrate/migrate/tree/master/source/go_bindata
-	source := bindata.Resource(AssetNames(), func(name string) ([]byte, error) {
-		return Asset(name)
-	})
-	driver, err := bindata.WithInstance(source)
-	if err != nil {
-		return nil, errors2.Wrap(err, "could not create bindata source driver")
-	}
 	dataSourceName := s.createDataSourceName()
-	m, err := migrate.NewWithSourceInstance("go-bindata", driver, dataSourceName)
+	m, err := migrate.New("file://migrations", dataSourceName)
 	if err != nil {
 		return nil, errors2.Wrap(err, "could not create migrator")
 	}
