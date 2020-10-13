@@ -17,4 +17,4 @@ WORKDIR /app
 COPY development.toml ./
 COPY --from=builder /bin/server ./
 
-CMD ["/app/server", "-config", "/app/development.toml"]
+CMD ["./server", "-config", "development.toml"]
