@@ -5,7 +5,7 @@ app.example.com {
     # to otherhost2:2020
 
     health_path /health
-    health_port 2021
+    health_port 2020
     health_interval 10s
     health_timeout 5s
   }

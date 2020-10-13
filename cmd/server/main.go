@@ -22,15 +22,13 @@ func main() {
 	}
 
 	s := server.New(server.Options{
-		Emailer:      createEmailer(c),
-		Storer:       createStorer(c, logger),
-		Logger:       logger,
-		ExternalHost: c.ExternalHost,
-		ExternalPort: c.ExternalPort,
-		InternalHost: c.InternalHost,
-		InternalPort: c.InternalPort,
-		Cert:         c.Cert,
-		Key:          c.Key,
+		Emailer: createEmailer(c),
+		Storer:  createStorer(c, logger),
+		Logger:  logger,
+		Host:    c.Host,
+		Port:    c.Port,
+		Cert:    c.Cert,
+		Key:     c.Key,
 	})
 
 	if err := s.Start(); err != nil {

@@ -8,13 +8,11 @@ import (
 
 // Config holds configuration data read from a config file.
 type Config struct {
-	ExternalHost string
-	ExternalPort int
-	InternalHost string
-	InternalPort int
-	Cert         string
-	Key          string
-	Emailer      struct {
+	Host    string
+	Port    int
+	Cert    string
+	Key     string
+	Emailer struct {
 		Token string
 	}
 	Storer struct {
