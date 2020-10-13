@@ -46,7 +46,6 @@ func (s *Storer) getMigrator() (*migrate.Migrate, error) {
 		return nil, errors2.Wrap(err, "could not create bindata source driver")
 	}
 	dataSourceName := s.createDataSourceName()
-	s.log.Println("Connecting on", dataSourceName)
 	m, err := migrate.NewWithSourceInstance("go-bindata", driver, dataSourceName)
 	if err != nil {
 		return nil, errors2.Wrap(err, "could not create migrator")
