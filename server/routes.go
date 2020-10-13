@@ -48,6 +48,5 @@ func (s *Server) setupExternalRoutes() {
 
 func (s *Server) setupInternalRoutes() {
 	s.internalMux.Get("/health", handlers.Health(s.Storer))
-	s.internalMux.Get("/version", handlers.Version(s.Name, s.Version))
 	s.internalMux.Get("/metrics", handlers.Metrics())
 }

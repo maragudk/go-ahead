@@ -29,7 +29,6 @@ func main() {
 		ExternalPort: c.ExternalPort,
 		InternalHost: c.InternalHost,
 		InternalPort: c.InternalPort,
-		Version:      Version,
 		Cert:         c.Cert,
 		Key:          c.Key,
 	})
