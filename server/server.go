@@ -27,8 +27,6 @@ type Server struct {
 	Storer          *storage.Storer
 	externalAddress string
 	internalAddress string
-	Name            string
-	Version         string
 	externalMux     *chi.Mux
 	internalMux     *chi.Mux
 	log             *log.Logger
@@ -46,8 +44,6 @@ type Options struct {
 	ExternalPort int
 	InternalHost string
 	InternalPort int
-	Name         string
-	Version      string
 	Cert         string
 	Key          string
 }
@@ -63,8 +59,6 @@ func New(options Options) *Server {
 		Storer:          options.Storer,
 		externalAddress: net.JoinHostPort(options.ExternalHost, strconv.Itoa(options.ExternalPort)),
 		internalAddress: net.JoinHostPort(options.InternalHost, strconv.Itoa(options.InternalPort)),
-		Name:            options.Name,
-		Version:         options.Version,
 		externalMux:     chi.NewRouter(),
 		internalMux:     chi.NewRouter(),
 		log:             logger,
