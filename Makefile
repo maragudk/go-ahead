@@ -1,14 +1,10 @@
 .PHONY: build build-css certs clean cover down lint	migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up up-build
 
 export NAME := ahead
-export VERSION := `git rev-parse --short HEAD`
 export MIGRATE_DB_URL := "postgres://${NAME}:123@localhost:5432/${NAME}?sslmode=disable"
 
 build:
-	sed -i.bak "s/VERSION/${VERSION}/g" cmd/server/version.go
 	GOOS=linux GOARCH=amd64 go build -o ${NAME} cmd/server/*.go
-	sed -i.bak "s/${VERSION}/VERSION/g" cmd/server/version.go
-	rm cmd/server/version.go.bak
 
 build-css:
 	NODE_ENV=production ./node_modules/.bin/tailwindcss build app.css -o public/styles/app.css
