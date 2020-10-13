@@ -14,7 +14,8 @@ RUN set -x && apt-get update && \
   rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
-COPY development.toml ./
+COPY docker.toml ./
+COPY public ./public/
 COPY --from=builder /bin/server ./
 
-CMD ["./server", "-config", "development.toml"]
+CMD ["./server", "-config", "docker.toml"]
