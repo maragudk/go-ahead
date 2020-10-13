@@ -10,9 +10,9 @@ import (
 	"github.com/maragudk/go-ahead/views"
 )
 
-func (s *Server) setupExternalRoutes() {
+func (s *Server) setupRoutes() {
 	// The views that can be requested by the browser
-	s.externalMux.Group(func(r chi.Router) {
+	s.mux.Group(func(r chi.Router) {
 		r.Use(middleware.Recoverer, handlers.NoClickjacking, handlers.StrictContentSecurityPolicy)
 		r.Use(s.sm.LoadAndSave)
 
@@ -28,7 +28,7 @@ func (s *Server) setupExternalRoutes() {
 	})
 
 	// The REST API
-	s.externalMux.Route("/api", func(r chi.Router) {
+	s.mux.Route("/api", func(r chi.Router) {
 		r.Use(middleware.Recoverer, handlers.JSONHeader)
 		r.Use(s.sm.LoadAndSave)
 
@@ -44,9 +44,12 @@ func (s *Server) setupExternalRoutes() {
 			r.Get("/session", handlers.Session())
 		})
 	})
-}
 
-func (s *Server) setupInternalRoutes() {
-	s.internalMux.Get("/health", handlers.Health(s.Storer))
-	s.internalMux.Get("/metrics", handlers.Metrics())
+	// Health and metrics
+	s.mux.Group(func(r chi.Router) {
+		r.Use(middleware.Recoverer)
+
+		r.Get("/health", handlers.Health(s.Storer))
+		r.Get("/metrics", handlers.Metrics())
+	})
 }

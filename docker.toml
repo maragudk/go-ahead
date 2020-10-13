@@ -1,7 +1,5 @@
-ExternalHost = "localhost"
-ExternalPort = 2020
-InternalHost = "localhost"
-InternalPort = 2021
+Host = ""
+Port = 2020
 Cert = "cert.pem"
 Key = "key.pem"
 
