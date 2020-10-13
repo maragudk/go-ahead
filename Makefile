@@ -1,12 +1,8 @@
-.PHONY: bindata build build-css certs clean cockroach-certs cockroach-sql cover down lint \
-	migrate-create migrate-goto migrate-up start test test-down test-integration test-up up
+.PHONY: build build-css certs clean cover down lint	migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up up-build
 
 export NAME := ahead
 export VERSION := `git rev-parse --short HEAD`
-export MIGRATE_DB_URL := "cockroachdb://root@localhost:26257/${NAME}?sslmode=verify-full&sslcert=certs/client.root.crt&sslkey=certs/client.root.key&sslrootcert=certs/ca.crt"
-
-bindata:
-	go-bindata -nometadata -pkg storage -o storage/migrations.go -ignore '.*\.go' -ignore '.DS_Store' -prefix storage/migrations storage/migrations
+export MIGRATE_DB_URL := "postgres://${NAME}:123@localhost:5432/${NAME}?sslmode=disable"
 
 build:
 	sed -i.bak "s/VERSION/${VERSION}/g" cmd/server/version.go
@@ -21,19 +17,7 @@ certs: generate_cert.go
 	go run generate_cert.go --rsa-bits=2048 --host=localhost
 
 clean:
-	rm -rf certs
-	rm -rf cockroach-data
-
-cockroach-certs:
-	rm -rf certs
-	mkdir -p certs/my-safe-directory
-	cockroach cert create-ca --certs-dir=certs --ca-key=certs/my-safe-directory/ca.key
-	cockroach cert create-node db localhost 127.0.0.1 --certs-dir=certs --ca-key=certs/my-safe-directory/ca.key
-	cockroach cert create-client root --certs-dir=certs --ca-key=certs/my-safe-directory/ca.key
-	cockroach cert create-client ${NAME} --certs-dir=certs --ca-key=certs/my-safe-directory/ca.key
-
-cockroach-sql:
-	cockroach sql --certs-dir certs
+	rm -rf data
 
 cover:
 	go tool cover -html=cover.out
@@ -49,6 +33,9 @@ lint:
 
 migrate-create:
 	migrate create -ext sql -dir storage/migrations -seq $(name)
+
+migrate-down:
+	migrate -path storage/migrations -database ${MIGRATE_DB_URL} down
 
 migrate-goto:
 	migrate -path storage/migrations -database ${MIGRATE_DB_URL} goto $(version)
@@ -72,9 +59,9 @@ test-up:
 	docker-compose -p ${NAME}-test -f docker-compose-test.yaml up -d
 
 up:
-	mkdir -p cockroach-data
+	mkdir -p data
 	docker-compose -p ${NAME} up -d
-	sleep 1
-	cockroach sql --certs-dir certs -e "create database if not exists ${NAME};"
-	cockroach sql --certs-dir certs -e "create user if not exists ${NAME};"
-	cockroach sql --certs-dir certs -e "grant select, insert, update, delete on database ${NAME} to ${NAME};"
+
+up-build:
+	mkdir -p data
+	docker-compose -p ${NAME} up --build -d

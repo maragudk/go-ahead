@@ -25,9 +25,8 @@ func TestStorer_MigrateUp(t *testing.T) {
 }
 
 func TestStorer_MigrateDown(t *testing.T) {
-	t.Run("migrates down to version 1", func(t *testing.T) {
-		s, cleanup := storagetest.CreateRootStorer()
-		defer cleanup()
+	t.Run("migrates down", func(t *testing.T) {
+		s, _ := storagetest.CreateRootStorer()
 
 		err := s.MigrateDown()
 		require.NoError(t, err)

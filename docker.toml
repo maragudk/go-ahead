@@ -8,6 +8,6 @@ Key = "key.pem"
 [Storer]
 User = "ahead"
 Password = "123"
-Host = "localhost"
+Host = "db"
 Port = 5432
 Database = "ahead"

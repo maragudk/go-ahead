@@ -8,7 +8,6 @@ import (
 
 // Config holds configuration data read from a config file.
 type Config struct {
-	Name         string
 	ExternalHost string
 	ExternalPort int
 	InternalHost string

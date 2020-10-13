@@ -29,7 +29,6 @@ func main() {
 		ExternalPort: c.ExternalPort,
 		InternalHost: c.InternalHost,
 		InternalPort: c.InternalPort,
-		Name:         c.Name,
 		Version:      Version,
 		Cert:         c.Cert,
 		Key:          c.Key,
@@ -43,7 +42,6 @@ func main() {
 func createStorer(c Config, logger *log.Logger) *storage.Storer {
 	return storage.NewStorer(storage.NewStorerOptions{
 		Logger:   logger,
-		AppName:  c.Name,
 		User:     c.Storer.User,
 		Host:     c.Storer.Host,
 		Port:     c.Storer.Port,

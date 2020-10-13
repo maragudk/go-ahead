@@ -4,24 +4,15 @@
 package storagetest
 
 import (
-	"bufio"
-	"context"
-	"database/sql"
-	"os"
-	"strings"
-	"time"
-
 	"github.com/maragudk/go-ahead/storage"
 )
 
-const port = 26258
-
 func createStorer(user string) *storage.Storer {
 	return storage.NewStorer(storage.NewStorerOptions{
-		AppName:  "ahead_test",
 		User:     user,
+		Password: "123",
 		Host:     "localhost",
-		Port:     port,
+		Port:     5432,
 		Database: "ahead",
 	})
 }
@@ -39,7 +30,9 @@ func CreateStorer() (*storage.Storer, func()) {
 	}
 
 	return s, func() {
-		dropDB(rootStorer)
+		if err := rootStorer.MigrateDown(); err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -52,55 +45,22 @@ func CreateRootStorer() (*storage.Storer, func()) {
 	}
 
 	return s, func() {
-		dropDB(s)
+		if err := s.MigrateDown(); err != nil {
+			panic(err)
+		}
 	}
 }
 
 // setupDB with root privileges.
 func setupDB() *storage.Storer {
-	s := createStorer("root")
+	s := createStorer("ahead")
 	if err := s.Connect(); err != nil {
 		panic(err)
 	}
-
-	executeSQLFromFile(s.DB.DB, "../storagetest/testdata/drop-database.sql")
-	executeSQLFromFile(s.DB.DB, "../storagetest/testdata/create-database.sql")
 
 	if err := s.MigrateUp(); err != nil {
 		panic(err)
 	}
 
 	return s
-}
-
-// dropDB idempotently.
-func dropDB(s *storage.Storer) {
-	executeSQLFromFile(s.DB.DB, "../storagetest/testdata/drop-database.sql")
-}
-
-func executeSQLFromFile(db *sql.DB, path string) {
-	file, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	scanner := bufio.NewScanner(file)
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-	query := ""
-	for scanner.Scan() {
-		line := scanner.Text()
-		// Skip comments
-		if strings.HasPrefix(line, "--") {
-			continue
-		}
-		query += line + " "
-		if !strings.HasSuffix(query, "; ") {
-			continue
-		}
-		_, err := db.ExecContext(ctx, query)
-		query = ""
-		if err != nil {
-			panic(err)
-		}
-	}
 }

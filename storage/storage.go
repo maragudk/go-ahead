@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/jmoiron/sqlx"
@@ -20,8 +22,8 @@ const (
 // Storer is the storage abstraction.
 type Storer struct {
 	DB       *sqlx.DB
-	appName  string
 	user     string
+	password string
 	host     string
 	port     int
 	database string
@@ -33,8 +35,8 @@ type Storer struct {
 
 // NewStorerOptions are options for NewStorer.
 type NewStorerOptions struct {
-	AppName  string
 	User     string
+	Password string
 	Host     string
 	Port     int
 	Database string
@@ -52,8 +54,8 @@ func NewStorer(options NewStorerOptions) *Storer {
 		logger = log.New(ioutil.Discard, "", 0)
 	}
 	return &Storer{
-		appName:  options.AppName,
 		user:     options.User,
+		password: options.Password,
 		host:     options.Host,
 		port:     options.Port,
 		database: options.Database,
@@ -70,32 +72,29 @@ func (s *Storer) Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), connectionTimeout)
 	defer cancel()
 
-	dataSourceName := s.createDataSourceName(false)
+	dataSourceName := s.createDataSourceName()
 
-	s.log.Println("Connecting to db on", dataSourceName)
 	var err error
 	s.DB, err = sqlx.ConnectContext(ctx, "postgres", dataSourceName)
 	if err != nil {
 		return errors2.Wrap(err, "could not connect to db")
 	}
 
-	if _, err := s.DB.ExecContext(ctx, "set APPLICATION_NAME = $1", s.appName); err != nil {
-		return errors2.Wrap(err, "could not set application name")
-	}
-
 	return nil
 }
 
 // createDataSourceName for connecting with sql.Open. Also used during migrations.
-func (s *Storer) createDataSourceName(cockroachSchema bool) string {
-	var schema string
-	if cockroachSchema {
-		schema = "cockroachdb"
-	} else {
-		schema = "postgresql"
+func (s *Storer) createDataSourceName() string {
+	dataSourceName := "postgresql://" + s.user
+	if s.password != "" {
+		dataSourceName += ":" + s.password
 	}
+	dataSourceName += "@" + url.PathEscape(s.host)
+	if s.port != 0 {
+		dataSourceName += ":" + strconv.Itoa(s.port)
+	}
+	dataSourceName += fmt.Sprintf("/%v?", s.database)
 
-	dataSourceName := fmt.Sprintf("%v://%v@%v:%v/%v?", schema, s.user, s.host, s.port, s.database)
 	if s.cert != "" && s.key != "" && s.rootCert != "" {
 		dataSourceName += fmt.Sprintf("sslmode=verify-full&sslcert=%v&sslkey=%v&sslrootcert=%v", s.cert, s.key, s.rootCert)
 	} else {

@@ -1,8 +1,7 @@
 /ahead
 /cert.pem
-/certs/
-/cockroach-data/
 /cover.out
+/data/
 /generate_cert.go
 /key.pem
 /node_modules/
