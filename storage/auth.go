@@ -56,7 +56,7 @@ func (s *Storer) Signup(ctx context.Context, name, email, password string) error
 func (s *Storer) Login(ctx context.Context, email, password string) (*model.User, error) {
 	// Start by filling in a password, otherwise bcrypt.CompareHashAndPassword returns bcrypt.ErrHashTooShort when no user was found.
 	var user model.User
-	if err := s.DB.Get(&user, loginQuery, email); err != nil {
+	if err := s.DB.GetContext(ctx, &user, loginQuery, email); err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			return nil, err
 		}
