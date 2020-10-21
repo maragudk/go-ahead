@@ -67,7 +67,6 @@ func NewStorer(options NewStorerOptions) *Storer {
 }
 
 // Connect to the database and ping it to test that it works.
-// Also sets the application name.
 func (s *Storer) Connect() error {
 	ctx, cancel := context.WithTimeout(context.Background(), connectionTimeout)
 	defer cancel()
