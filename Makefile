@@ -1,10 +1,10 @@
-.PHONY: build build-css certs clean cover down lint	migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up up-build
+.PHONY: build build-css certs clean cover down lint migrate-create migrate-down migrate-goto migrate-up start test test-down test-integration test-up up
 
 export NAME := ahead
 export MIGRATE_DB_URL := "postgres://${NAME}:123@localhost:5432/${NAME}?sslmode=disable"
 
 build:
-	GOOS=linux GOARCH=amd64 go build -o ${NAME} cmd/server/*.go
+	docker-compose -p ${NAME} build
 
 build-css:
 	NODE_ENV=production ./node_modules/.bin/tailwindcss build app.css -o public/styles/app.css
@@ -57,7 +57,3 @@ test-up:
 up:
 	mkdir -p data
 	docker-compose -p ${NAME} up -d
-
-up-build:
-	mkdir -p data
-	docker-compose -p ${NAME} up --build -d
