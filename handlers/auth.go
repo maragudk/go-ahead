@@ -106,7 +106,7 @@ type sessionDestroyer interface {
 	Destroy(ctx context.Context) error
 }
 
-// Login creates an http.Handler for logging out.
+// Logout creates an http.Handler for logging out.
 // It just destroys the current user session.
 func Logout(s sessionDestroyer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
