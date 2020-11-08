@@ -8,12 +8,12 @@ import (
 )
 
 func createStorer(user string) *storage.Storer {
-	return storage.NewStorer(storage.NewStorerOptions{
+	return storage.New(storage.Options{
 		User:     user,
 		Password: "123",
 		Host:     "localhost",
 		Port:     5432,
-		Database: "ahead",
+		Name:     "ahead",
 	})
 }
 

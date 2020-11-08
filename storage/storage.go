@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net/url"
 	"strconv"
 	"time"
 
@@ -26,29 +25,25 @@ type Storer struct {
 	password string
 	host     string
 	port     int
-	database string
-	cert     string
-	key      string
-	rootCert string
+	socket   string
+	name     string
 	log      *log.Logger
 }
 
-// NewStorerOptions are options for NewStorer.
-type NewStorerOptions struct {
+// Options for New.
+type Options struct {
 	User     string
 	Password string
 	Host     string
 	Port     int
-	Database string
-	Cert     string
-	Key      string
-	RootCert string
+	Socket   string
+	Name     string
 	Logger   *log.Logger
 }
 
-// NewStorer returns a new Storer with the given options.
+// New returns a new Storer with the given options.
 // If no logger is provided, the logs are discarded.
-func NewStorer(options NewStorerOptions) *Storer {
+func New(options Options) *Storer {
 	logger := options.Logger
 	if logger == nil {
 		logger = log.New(ioutil.Discard, "", 0)
@@ -58,10 +53,8 @@ func NewStorer(options NewStorerOptions) *Storer {
 		password: options.Password,
 		host:     options.Host,
 		port:     options.Port,
-		database: options.Database,
-		cert:     options.Cert,
-		key:      options.Key,
-		rootCert: options.RootCert,
+		socket:   options.Socket,
+		name:     options.Name,
 		log:      logger,
 	}
 }
@@ -84,21 +77,18 @@ func (s *Storer) Connect() error {
 
 // createDataSourceName for connecting with sql.Open. Also used during migrations.
 func (s *Storer) createDataSourceName() string {
+	if s.socket != "" {
+		return fmt.Sprintf("user=%v password=%v host=%v dbname=%v sslmode=disable", s.user, s.password, s.socket, s.name)
+	}
 	dataSourceName := "postgresql://" + s.user
 	if s.password != "" {
 		dataSourceName += ":" + s.password
 	}
-	dataSourceName += "@" + url.PathEscape(s.host)
+	dataSourceName += "@" + s.host
 	if s.port != 0 {
 		dataSourceName += ":" + strconv.Itoa(s.port)
 	}
-	dataSourceName += fmt.Sprintf("/%v?", s.database)
-
-	if s.cert != "" && s.key != "" && s.rootCert != "" {
-		dataSourceName += fmt.Sprintf("sslmode=verify-full&sslcert=%v&sslkey=%v&sslrootcert=%v", s.cert, s.key, s.rootCert)
-	} else {
-		dataSourceName += "sslmode=disable"
-	}
+	dataSourceName += fmt.Sprintf("/%v?sslmode=disable", s.name)
 
 	return dataSourceName
 }

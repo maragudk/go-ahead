@@ -15,14 +15,13 @@ type Config struct {
 	Emailer struct {
 		Token string
 	}
-	Storer struct {
+	Database struct {
+		User     string
+		Password string
 		Host     string
 		Port     int
-		User     string
-		Database string
-		Cert     string
-		Key      string
-		RootCert string
+		Socket   string
+		Name     string
 	}
 }
 

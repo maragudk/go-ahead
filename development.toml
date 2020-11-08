@@ -3,9 +3,9 @@ Port = 2020
 Cert = "cert.pem"
 Key = "key.pem"
 
-[Storer]
+[Database]
 User = "ahead"
 Password = "123"
 Host = "localhost"
 Port = 5432
-Database = "ahead"
+Name = "ahead"
