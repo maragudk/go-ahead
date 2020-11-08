@@ -37,15 +37,14 @@ func main() {
 }
 
 func createStorer(c Config, logger *log.Logger) *storage.Storer {
-	return storage.NewStorer(storage.NewStorerOptions{
+	return storage.New(storage.Options{
 		Logger:   logger,
-		User:     c.Storer.User,
-		Host:     c.Storer.Host,
-		Port:     c.Storer.Port,
-		Database: c.Storer.Database,
-		Cert:     c.Storer.Cert,
-		Key:      c.Storer.Key,
-		RootCert: c.Storer.RootCert,
+		User:     c.Database.User,
+		Password: c.Database.Password,
+		Host:     c.Database.Host,
+		Port:     c.Database.Port,
+		Socket:   c.Database.Socket,
+		Name:     c.Database.Name,
 	})
 }
 
